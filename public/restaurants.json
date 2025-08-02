@@ -1,0 +1,25 @@
+{
+  "restaurants": [
+    {
+      "name": "The Gourmet Kitchen",
+      "menu": null,
+      "account_owner": "33333333-3333-3333-3333-333333333300",
+      "directors": [
+        "edfff18e-0e42-4179-888c-db8de08c29c8"
+      ],
+      "managers": [
+        "33333333-3333-3333-3333-333333333301"
+      ],
+      "employees": [
+        "33333333-3333-3333-3333-333333333302"
+      ],
+      "status": "active",
+      "address": {
+        "street": "123 Culinary Street",
+        "city": "Foodville",
+        "state": "Tasteland",
+        "zip": "12345"
+      }
+    }
+  ]
+}
