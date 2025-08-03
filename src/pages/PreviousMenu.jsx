@@ -19,15 +19,6 @@ export default function MenuManagement() {
   const [foodCategoriesOptions, setFoodCategoriesOptions] = useState([]);
   const [wineCategoriesOptions, setWineCategoriesOptions] = useState([]);
 
-  const foodCategoryOptions = [
-    { value: "All Categories", label: "All Categories" },
-    { value: "Entrée", label: "Entrée" },
-    { value: "Pizza", label: "Pizza" },
-    { value: "Dessert", label: "Dessert" },
-    { value: "Red", label: "Red" },
-    { value: "White", label: "White" },
-  ]
-
   useEffect(() => {
     fetchData()
   }, [])

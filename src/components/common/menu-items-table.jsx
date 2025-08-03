@@ -396,7 +396,7 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
                   setShowDeleteModal(false);
                 }}
               >
-                Delete
+                Archive
               </button>
             </div>
           </div>

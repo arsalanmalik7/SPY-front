@@ -48,7 +48,7 @@ export default function ManageMenuPanel({
       (update) => {
         let type = "";
         if (update.action === "dish_created") type = "added";
-        else if (update.action === "dish_deleted") type = "removed";
+        else if (update.action === "dish_archived") type = "removed";
         else if (update.action === "dish_updated") type = "updated";
         else if (update.action === "dish_restored") type = "restored";
         else type = "other";
@@ -118,7 +118,7 @@ export default function ManageMenuPanel({
       (update) => {
         let type = "";
         if (update.action === "wine_created") type = "added";
-        else if (update.action === "wine_deleted") type = "removed";
+        else if (update.action === "wine_archived") type = "removed";
         else if (update.action === "wine_updated") type = "updated";
         else if (update.action === "wine_restored") type = "restored";
         else type = "other";
@@ -328,7 +328,11 @@ export default function ManageMenuPanel({
           <div className="grid w-full grid-cols-2 rounded-md overflow-hidden">
             <button
               onClick={() => setActiveTab("food")}
-              className={`flex items-center justify-center gap-2 py-2 px-4 ${activeTab === "food" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 border border-red-600"}`}
+              className={`flex items-center justify-center gap-2 py-2 px-4 ${
+                activeTab === "food"
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-gray-700 border border-red-600"
+              }`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -367,7 +371,11 @@ export default function ManageMenuPanel({
             </button>
             <button
               onClick={() => setActiveTab("wine")}
-              className={`flex items-center justify-center gap-2 py-2 px-4 ${activeTab === "wine" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-700 border border-red-600"}`}
+              className={`flex items-center justify-center gap-2 py-2 px-4 ${
+                activeTab === "wine"
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-gray-700 border border-red-600"
+              }`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -494,18 +502,20 @@ export default function ManageMenuPanel({
             <div>
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-sm font-medium">Recent Menu Updates</h3>
-                <button
-                  className="text-red-600 text-sm"
-                  onClick={() => {
-                    setShowRecentUpdatesModal(true);
-                    setRecentUpdatesModalType("food");
-                  }}
-                >
-                  View All
-                </button>
+                {foodAnalytics?.recentUpdates.length > 0 && (
+                  <button
+                    className="text-red-600 text-sm"
+                    onClick={() => {
+                      setShowRecentUpdatesModal(true);
+                      setRecentUpdatesModalType("food");
+                    }}
+                  >
+                    View All
+                  </button>
+                )}
               </div>
               <div className="space-y-3 text-left">
-                {foodAnalytics.recentUpdates
+                {foodAnalytics?.recentUpdates
                   .slice(0, 3)
                   .map((update, index) => (
                     <div
@@ -564,7 +574,7 @@ export default function ManageMenuPanel({
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={2}
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                                   />
                                 </svg>
                               </div>
@@ -610,7 +620,7 @@ export default function ManageMenuPanel({
                             <div className="font-medium text-left">
                               {update.type === "added" && "New Item Added"}
                               {update.type === "price" && "Price Update"}
-                              {update.type === "removed" && "Item Removed"}
+                              {update.type === "removed" && "Item Archived"}
                               {update.type === "updated" && "Item Updated"}
                               {update.type === "restored" && "Item Restored"}
                             </div>
@@ -709,10 +719,10 @@ export default function ManageMenuPanel({
                         category.name === "Red Wine"
                           ? "bg-red-600"
                           : category.name === "White Wine"
-                            ? "bg-amber-400"
-                            : category.name === "Sparkling"
-                              ? "bg-yellow-400"
-                              : "bg-pink-400"
+                          ? "bg-amber-400"
+                          : category.name === "Sparkling"
+                          ? "bg-yellow-400"
+                          : "bg-pink-400"
                       }`}
                     ></div>
                     <span className="text-sm">{category.name}</span>
@@ -809,20 +819,22 @@ export default function ManageMenuPanel({
             <div>
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-sm font-medium">Recent Wine Updates</h3>
-                <button
-                  className="text-red-600 text-sm"
-                  onClick={() => {
-                    setShowRecentUpdatesModal(true);
-                    setRecentUpdatesModalType("wine");
-                  }}
-                >
-                  View All
-                </button>
+                {wineAnalytics.recentUpdates?.length > 0 && (
+                  <button
+                    className="text-red-600 text-sm"
+                    onClick={() => {
+                      setShowRecentUpdatesModal(true);
+                      setRecentUpdatesModalType("wine");
+                    }}
+                  >
+                    View All
+                  </button>
+                )}
               </div>
               <div className="space-y-3">
                 {wineAnalytics.recentUpdates
-                  .slice(0, 3)
-                  .map((update, index) => (
+                  ?.slice(0, 3)
+                  ?.map((update, index) => (
                     <div
                       key={index}
                       className="border rounded-lg overflow-hidden bg-background"
@@ -879,7 +891,7 @@ export default function ManageMenuPanel({
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                     strokeWidth={2}
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                                   />
                                 </svg>
                               </div>
@@ -889,7 +901,7 @@ export default function ManageMenuPanel({
                             <div className="font-medium">
                               {update.type === "added" && "New Wine Added"}
                               {update.type === "price" && "Price Update"}
-                              {update.type === "removed" && "Wine Removed"}
+                              {update.type === "removed" && "Wine Archived"}
                             </div>
                             <div className="text-sm text-gray-600">
                               {update.item}
@@ -898,12 +910,12 @@ export default function ManageMenuPanel({
                               <div className="flex items-center gap-2">
                                 <div className="h-5 w-5 rounded-full bg-gray-300 flex items-center justify-center text-xs text-gray-700">
                                   {update.user
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")}
+                                    ?.split(" ")
+                                    ?.map((n) => n[0])
+                                    ?.join("")}
                                 </div>
                                 <span className="text-xs text-gray-500">
-                                  {update.user}
+                                  {update?.user}
                                 </span>
                               </div>
                               <span className="text-xs text-gray-500">

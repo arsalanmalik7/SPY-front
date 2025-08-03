@@ -26,7 +26,7 @@ const ReferenceMenuPanel = ({
           image_url: wine?.image_url || 'N/A',
           texture: wine?.style.texture || 'N/A',
           flavorIntensity: wine?.style.flavor_intensity || 'N/A',
-          price: { glass: wine?.offering?.glass_price, bottle: wine?.offering?.glass_price }, // Add price if available in your data
+          price: { glass: wine?.offering?.glass_price, bottle: wine?.offering?.bottle_price }, // Add price if available in your data
           tags: [
             ...(wine?.is_organic ? ['Organic'] : []),
             ...(wine?.is_biodynamic ? ['Biodynamic'] : []),
