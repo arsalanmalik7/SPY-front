@@ -9,58 +9,72 @@ const ReferenceMenuPanel = ({
   menuData
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState("None");
 
-  
 
   // Transform wine data
   const wineData = Array.isArray(menuData)
     ? menuData.map(wine => {
-        return {
-          name: wine?.product_name,
-          year: wine?.vintage.toString(),
-          varietals: wine?.varietals.join(', '),
-          region: `${wine?.region.country} → ${wine?.region.state} → ${wine?.region.appellation}`,
-          category: wine?.category,
-          style: wine?.sub_category,
-          body: wine?.style.body || 'N/A',
-          image_url: wine?.image_url || 'N/A',
-          texture: wine?.style.texture || 'N/A',
-          flavorIntensity: wine?.style.flavor_intensity || 'N/A',
-          price: { glass: wine?.offering?.glass_price, bottle: wine?.offering?.bottle_price }, // Add price if available in your data
-          tags: [
-            ...(wine?.is_organic ? ['Organic'] : []),
-            ...(wine?.is_biodynamic ? ['Biodynamic'] : []),
-            ...(wine?.is_vegan ? ['Vegan'] : []),
-            ...(wine?.is_filtered ? ['Filtered'] : []),
-            ...(wine?.has_residual_sugar ? ['Residual Sugar'] : [])
-          ],
-        };
-      })
+      return {
+        name: wine?.product_name,
+        year: wine?.vintage.toString(),
+        varietals: wine?.varietals.join(', '),
+        region: `${wine?.region.country} → ${wine?.region.state} → ${wine?.region.appellation}`,
+        category: wine?.category,
+        style: wine?.sub_category,
+        body: wine?.style.body || 'N/A',
+        image_url: wine?.image_url || 'N/A',
+        texture: wine?.style.texture || 'N/A',
+        flavorIntensity: wine?.style.flavor_intensity || 'N/A',
+        price: { glass: wine?.offering?.glass_price, bottle: wine?.offering?.bottle_price }, // Add price if available in your data
+        tags: [
+          ...(wine?.is_organic ? ['Organic'] : []),
+          ...(wine?.is_biodynamic ? ['Biodynamic'] : []),
+          ...(wine?.is_vegan ? ['Vegan'] : []),
+          ...(wine?.is_filtered ? ['Filtered'] : []),
+          ...(wine?.has_residual_sugar ? ['Residual Sugar'] : [])
+        ],
+      };
+    })
     : [];
-
-  
-   
-  const filteredWineData = wineData.filter(wine =>
-    wine?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    wine?.varietals?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    wine?.region?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    wine?.style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    wine?.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  
-
   const wineCategories = ["white", "red", "rose", "orange", "sparkling", "dessert"];
 
+
+
+
+
+  const handleOptionChange = async (e) => {
+    const { value } = e.target;
+    setFilterType(value);
+  }
+
+  // Update your filteredWineData to include the filter logic
+  const filteredWineData = wineData.filter(wine => {
+    // First apply search filter
+    const matchesSearch = wine?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      wine?.varietals?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      wine?.region?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      wine?.style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      wine?.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // Then apply price filter
+    let matchesFilter = true;
+    if (filterType === "by_the_glass") {
+      matchesFilter = wine?.price?.glass && wine.price.glass > 0;
+    } else if (filterType === "by_the_bottle") {
+      matchesFilter = wine?.price?.bottle && wine.price.bottle > 0;
+    }
+    // If filterType is "None", matchesFilter remains true
+
+    return matchesSearch && matchesFilter;
+  })
+
   const winesByCategory = wineCategories.reduce((acc, category) => {
-    acc[category] = wineData.filter(
+    acc[category] = filteredWineData.filter(
       wine => wine.category && wine.category.toLowerCase() === category
     );
     return acc;
   }, {});
- React.useEffect(() => {
-      console.log("menuData received in ReferenceFoodMenuPanel wine:", menuData);
-    }, [menuData]);
 
   return (
     <div className={`fixed inset-y-0 right-0 w-full max-w-sm bg-white shadow-lg z-[102] transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
@@ -85,6 +99,33 @@ const ReferenceMenuPanel = ({
           </div>
         </div>
 
+        <div className='mb-4'>
+          <label
+            htmlFor="by_the_filter"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Filter Options
+          </label>
+          <div className="relative">
+            <select
+              id="by_the_filter"
+              name="by_the_filter"
+              className="w-full pl-4 pr-10 py-2 rounded-md bg-background border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#e11d48] text-black text-base appearance-none cursor-pointer"
+              onChange={handleOptionChange}
+            >
+              <option value="None">None</option>
+              <option value="by_the_glass">By The Glass</option>
+              <option value="by_the_bottle">By The Bottle</option>
+            </select>
+            {/* Custom dropdown arrow */}
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
         {/* Render each wine category section dynamically */}
         {wineCategories.map(category => (
           winesByCategory[category].length > 0 && (
@@ -97,19 +138,19 @@ const ReferenceMenuPanel = ({
                   <Card key={wine.name} className="p-4 bg-background border border-gray-300 rounded-lg">
                     <div className="text-base text-black text-left">
                       {wine.image_url && (
-                      <img
-                        src={
-                          wine.image_url.startsWith("/")
-                            ? process.env.REACT_APP_IMAGE_BASE_URL + `${wine.image_url}`
-                            : wine.image_url
-                        }
-                        alt={wine.name}
-                        className="w-full h-40 object-cover rounded-md"
-                      />
-                    )}
+                        <img
+                          src={
+                            wine.image_url.startsWith("/")
+                              ? process.env.REACT_APP_IMAGE_BASE_URL + `${wine.image_url}`
+                              : wine.image_url
+                          }
+                          alt={wine.name}
+                          className="w-full h-40 object-cover rounded-md"
+                        />
+                      )}
                       <div className="font-semibold text-base">{wine.name}</div>
 
-                     
+
                       <div className="text-gray-700 mt-0.5 text-sm">{wine.year}</div>
                       <div className="mt-2"><span className="font-medium">Varietals:</span> {wine.varietals}</div>
                       <div><span className="font-medium">Region:</span> {wine.region}</div>
