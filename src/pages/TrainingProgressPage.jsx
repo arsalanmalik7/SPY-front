@@ -28,7 +28,9 @@ const TrainingProgressPage = () => {
   }, []);
 
   if (loading) {
-    return <div className="p-4">Loading...</div>;
+    return <div className="flex min-h-screen items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-500"></div>
+    </div>
   }
 
   if (error) {
@@ -105,20 +107,20 @@ const TrainingProgressPage = () => {
     food: {
       lessonsByUnitArray: lessonsByUnitArray,
       chaptersCompleted: progressData.food.foodCompletedLessons,
-      totalChapters: progressData.allLessons / 2, 
+      totalChapters: progressData.allLessons / 2,
       averageScore: progressData.food.foodAverageScoreInPercentage,
       averageAttempts: progressData.food.foodAverageAttempts,
-      unitsCompleted: completedFoodUnits, 
+      unitsCompleted: completedFoodUnits,
       totalUnits: Math.ceil((progressData.allLessons / 2) / 4),
       nextChapter: progressData.food.foodDueLessons[0]?.chapter_name || 'No upcoming chapters'
     },
     wine: {
 
       chaptersCompleted: progressData.wine.wineCompletedLessons,
-      totalChapters: progressData.allLessons / 2, 
+      totalChapters: progressData.allLessons / 2,
       averageScore: progressData.wine.wineAverageScoreInPercentage,
       averageAttempts: progressData.wine.wineAverageAttempts,
-      unitsCompleted: completedWineUnits, 
+      unitsCompleted: completedWineUnits,
       totalUnits: Math.ceil((progressData.allLessons / 2) / 4),
       nextChapter: progressData.wine.wineDueLessons[0]?.chapter_name || 'No upcoming chapters'
     }

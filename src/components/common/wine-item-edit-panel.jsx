@@ -575,7 +575,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
               type="text"
               value={newVarietal}
               onChange={(e) => setNewVarietal(e.target.value)}
-              placeholder="Add varietal..."
+              placeholder="Enter grapes in order of percentage, highest first (main grape first)"
               className={`flex-1 p-2 border bg-background border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary ${validationErrors.varietals ? "border-red-500" : ""
                 }`}
               onKeyDown={(e) => {

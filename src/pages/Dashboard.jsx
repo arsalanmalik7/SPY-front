@@ -169,7 +169,9 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {loading ? (
-                  <div>Loading restaurants...</div>
+                  <div className="flex min-h-screen items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-500"></div>
+                  </div>
                 ) : error ? (
                   <div className="text-red-500">{error}
                   </div>

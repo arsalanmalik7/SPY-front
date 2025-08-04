@@ -37,7 +37,7 @@ export default function RestaurantManagement() {
   const fetchRestaurants = async () => {
     try {
       const data = await RestaurantsService.getAllRestaurants()
-      
+
       setRestaurants(data)
     } catch (error) {
       console.error('Error fetching restaurants:', error)
@@ -50,7 +50,7 @@ export default function RestaurantManagement() {
     const fetchProfile = async () => {
       try {
         const profile = await authService.getProfile();
-        
+
         setUserProfile(profile);
       } catch (error) {
         console.log(error, "error");
@@ -109,7 +109,7 @@ export default function RestaurantManagement() {
 
   const handleOpenSidePanel = async (panel, restaurant = null) => {
     try {
-      
+
       setActiveSidePanel(panel);
       setSelectedRestaurant(restaurant);
       const [dishAnalytics, wineAnalytics] = await Promise.all([
@@ -155,7 +155,7 @@ export default function RestaurantManagement() {
         setSnackbarMessage("Restaurant added!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-      } else if(activeSidePanel === "editRestaurant") {
+      } else if (activeSidePanel === "editRestaurant") {
         setSnackbarMessage("Restaurant updated!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
@@ -283,8 +283,8 @@ export default function RestaurantManagement() {
           </div>
 
           {loading ? (
-            <div className="text-center p-8 bg-white rounded-lg border border-gray-200">
-              <p className="text-gray-500">Loading restaurants...</p>
+            <div className="flex min-h-screen items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-500"></div>
             </div>
           ) : (
             <RestaurantList
@@ -343,7 +343,7 @@ export default function RestaurantManagement() {
       {(activeSidePanel === "addRestaurant" || activeSidePanel === "editRestaurant") && (
         <AddRestaurantPanel
           restaurant={activeSidePanel === "editRestaurant" ? selectedRestaurant : null}
-          onSave={()=>handleSaveRestaurant(activeSidePanel)}
+          onSave={() => handleSaveRestaurant(activeSidePanel)}
           onClose={handleCloseSidePanel}
         />
       )}

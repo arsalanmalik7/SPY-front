@@ -212,7 +212,14 @@ export default function ProfilePage() {
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-1">{badge.badge_name}</h4>
+                      {/* Display actual chapter/unit names instead of generic badge_name */}
+                      <h4 className="text-sm font-medium text-gray-900 mb-1">
+                        {badge.chapter_name || badge.unit_name || badge.badge_name}
+                      </h4>
+                      {/* Show additional context */}
+                      <p className="text-xs text-gray-600 mb-1">
+                        {badge.category} {badge.chapter_name ? 'Chapter' : 'Unit'} Expert
+                      </p>
                       <p className="text-xs text-gray-500">Score: {badge.score}</p>
                       <p className="text-xs text-gray-500">Earned: {formatDate(badge.earned_at)}</p>
                     </div>
