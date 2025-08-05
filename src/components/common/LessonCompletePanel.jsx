@@ -44,6 +44,7 @@ const LessonCompletePanel = ({
     completedChapters = lessonData.chapters.filter(
       ch => ch.status && ch.status.toLowerCase() === 'completed'
     ).length;
+     completedChapters += 1;
   }
 
   return (
