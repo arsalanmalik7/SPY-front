@@ -18,11 +18,7 @@ export default function ViewEmployeesPanel({ restaurant, onClose }) {
       .finally(() => setLoading(false));
   }, [restaurant?.uuid]);
 
-  // Mock completion rate by role (since not in API)
-  const completionRateByRole = [
-    { role: "Managers", rate: 95 },
-    { role: "Employees", rate: 82 },
-  ];
+  
 
   return (
     <div className="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-[50%] bg-white border-l border-gray-200 shadow-lg z-50 overflow-y-auto">

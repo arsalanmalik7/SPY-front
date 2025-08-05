@@ -6,7 +6,8 @@ const CompletedLessonsTable = ({ lessons = [] }) => {
   const [selectedUnit, setSelectedUnit] = useState("all");
   const [selectedDate, setSelectedDate] = useState("all");
   const [selectedLessonType, setSelectedLessonType] = useState("all");
-  const [sortByScoreDesc, setSortByScoreDesc] = useState(true);
+  const [sortBy, setSortBy] = useState("score");
+  const [sortDesc, setSortDesc] = useState(true);
 
   // Category dropdown
   // const categoryOptions = useMemo(() => {
@@ -67,9 +68,24 @@ const CompletedLessonsTable = ({ lessons = [] }) => {
 
     // NEW: Sort by score
     filtered.sort((a, b) => {
-      const scoreA = parseFloat(a.score) || 0;
-      const scoreB = parseFloat(b.score) || 0;
-      return sortByScoreDesc ? scoreB - scoreA : scoreA - scoreB;
+      let valA = a[sortBy];
+      let valB = b[sortBy];
+
+      // Convert values for proper sorting
+      if (sortBy === "score" || sortBy === "attempts") {
+        valA = parseFloat(valA) || 0;
+        valB = parseFloat(valB) || 0;
+      } else if (sortBy === "completionDate") {
+        valA = new Date(valA);
+        valB = new Date(valB);
+      } else if (sortBy === "title") {
+        valA = valA?.toLowerCase() || "";
+        valB = valB?.toLowerCase() || "";
+      }
+
+      if (valA < valB) return sortDesc ? 1 : -1;
+      if (valA > valB) return sortDesc ? -1 : 1;
+      return 0;
     });
 
     return filtered;
@@ -79,7 +95,8 @@ const CompletedLessonsTable = ({ lessons = [] }) => {
     selectedUnit,
     selectedDate,
     selectedLessonType,
-    sortByScoreDesc,
+    sortBy,
+    sortDesc,
   ]);
 
   return (
@@ -127,20 +144,43 @@ const CompletedLessonsTable = ({ lessons = [] }) => {
         <table className="min-w-full border-separate border-spacing-0">
           <thead>
             <tr>
-              <th className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-l border-r border-[#FFA944] rounded-tl-lg">
-                Lesson Title
-              </th>
-              <th className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-r border-[#FFA944]">
-                Completion Date
+              <th
+                onClick={() => {
+                  setSortBy("title");
+                  setSortDesc(sortBy === "title" ? !sortDesc : true);
+                }}
+                className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-l border-r border-[#FFA944] rounded-tl-lg cursor-pointer"
+              >
+                Lesson Title {sortBy === "title" ? (sortDesc ? "▼" : "▲") : ""}
               </th>
               <th
-                onClick={() => setSortByScoreDesc((prev) => !prev)}
+                onClick={() => {
+                  setSortBy("completionDate");
+                  setSortDesc(sortBy === "completionDate" ? !sortDesc : true);
+                }}
                 className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-r border-[#FFA944] cursor-pointer"
               >
-                Score {sortByScoreDesc ? "▼" : "▲"}
+                Completion Date{" "}
+                {sortBy === "completionDate" ? (sortDesc ? "▼" : "▲") : ""}
               </th>
-              <th className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-r border-[#FFA944] rounded-tr-lg">
-                Attempts
+              <th
+                onClick={() => {
+                  setSortBy("score");
+                  setSortDesc(sortBy === "score" ? !sortDesc : true);
+                }}
+                className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-r border-[#FFA944] cursor-pointer"
+              >
+                Score {sortBy === "score" ? (sortDesc ? "▼" : "▲") : ""}
+              </th>
+
+              <th
+                onClick={() => {
+                  setSortBy("attempts");
+                  setSortDesc(sortBy === "attempts" ? !sortDesc : true);
+                }}
+                className="bg-[#FFA944] text-black text-sm font-bold px-6 py-4 text-left border-t border-r border-[#FFA944] rounded-tr-lg cursor-pointer"
+              >
+                Attempts {sortBy === "attempts" ? (sortDesc ? "▼" : "▲") : ""}
               </th>
             </tr>
           </thead>

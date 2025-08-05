@@ -63,7 +63,7 @@ export default function LessonProgressPanel({ restaurant, onClose }) {
               </div>
               <div className="p-2.5 bg-background rounded-xl text-left">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Avg. Completion</h3>
-                <p className="text-2xl font-bold text-textcolor">{data.avgCompletionRatePerLesson ?? 0}m</p>
+                <p className="text-2xl font-bold text-textcolor">{data.avgCompletionRatePerLesson?.toFixed(2) ?? 0}</p>
                 <p className="text-xs text-gray-500">Per Lesson</p>
               </div>
             </div>
@@ -77,41 +77,6 @@ export default function LessonProgressPanel({ restaurant, onClose }) {
                 ))}
               </div>
             </div> */}
-
-            {/* Completion Rate by Role */}
-            <div>
-              <h3 className="text-sm font-medium mb-2 text-left text-textcolor">Completion Rate by Role</h3>
-              <div className="flex flex-wrap justify-between gap-4">
-                <div className="w-full sm:w-[48%]">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm">Managers</span>
-                    <span className="text-sm font-medium">98%</span>
-                  </div>
-                  <ProgressBar
-                    variant="dark"
-                    showLabel={false}
-                    value={98}
-                    max={100}
-                    className="h-2 bg-gray-100"
-                    progressClassName="bg-primary"
-                  />
-                </div>
-                <div className="w-full sm:w-[48%]">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm">Employees</span>
-                    <span className="text-sm font-medium">92%</span>
-                  </div>
-                  <ProgressBar
-                    variant="dark"
-                    showLabel={false}
-                    value={92}
-                    max={100}
-                    className="h-2 bg-gray-100"
-                    progressClassName="bg-primary"
-                  />
-                </div>
-              </div>
-            </div>
 
             {/* Overdue Lessons */}
             <div>

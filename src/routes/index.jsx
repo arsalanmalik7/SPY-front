@@ -79,6 +79,8 @@ const roleRouteMap = {
     "/lesson-progress",
     "/previous-menu",
     "/subscription",
+    "/profile-security",
+    "/bulk-upload-users"
   ],
   director: [
     "/dashboard",
@@ -93,6 +95,8 @@ const roleRouteMap = {
     "/lesson-progress",
     "/previous-menu",
     "/subscription",
+    "/profile-security",
+    "/bulk-upload-users"
   ],
   employee: [
     "/my-lessons",
@@ -101,6 +105,7 @@ const roleRouteMap = {
     "/profile-page",
     "/edit-profile",
     "/previous-menu",
+    "/profile-security",
   ],
 };
 

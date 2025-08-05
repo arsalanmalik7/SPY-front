@@ -145,7 +145,9 @@ const TrainingProgressPage = () => {
   const nextDueLesson = progressData.dueLessons[0];
   const daysRemaining = nextDueLesson ? getDaysRemaining(nextDueLesson.DueDate) : 0;
 
-
+  const progressPercentage = metrics.totalLessons > 0
+    ? (metrics.lessonsCompleted / metrics.totalLessons) * 100
+    : 0;
 
   return (
     <div className="p-4 sm:p-6 max-w-8xl mx-auto space-y-6 min-h-screen">
@@ -177,8 +179,9 @@ const TrainingProgressPage = () => {
                 <svg className="w-full h-full" viewBox="0 0 36 36">
                   <circle cx="18" cy="18" r="16" fill="none" stroke="#FDE8E8" strokeWidth="4" />
                   <circle cx="18" cy="18" r="16" fill="none" stroke="#C1121F" strokeWidth="4"
-                    strokeDasharray={`${(metrics.lessonsCompleted / metrics.totalLessons) * 100} ${100 - (metrics.lessonsCompleted / metrics.totalLessons) * 100}`}
-                    strokeDashoffset="0" />
+                    strokeDasharray="100 100"
+                    strokeDashoffset={100 - progressPercentage}
+                  />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-xl font-bold text-black">{metrics.lessonsCompleted}/{metrics.totalLessons}<br /><span className='text-sm font-normal'>Lessons</span></span>

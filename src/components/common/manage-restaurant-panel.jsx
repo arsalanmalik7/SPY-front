@@ -213,65 +213,11 @@ export default function ManageRestaurantPanel({ restaurant, onClose, fetchData }
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-textcolor mb-1 text-left">Training Progress</label>
-          <div className="p-2.5 bg-background rounded-xl">
-            <div className="flex justify-between mb-1">
-              <span className="text-sm">Completed Training</span>
-              <span className="text-sm font-medium">22/24 Employees</span>
-            </div>
-            <ProgressBar variant="dark" showLabel={false} value={22} max={24} className="h-2 bg-gray-100" progressClassName="bg-primary" />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-textcolor mb-1 text-left">Recent Activity</label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start p-2.5 bg-background rounded-xl w-full">
-              <div className="h-8 w-8 rounded-full mr-3 flex-shrink-0 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-textcolor"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <div className="text-left">
-                <p className="text-sm font-medium">Menu updated - 3 items added</p>
-                <p className="text-xs text-gray-500">Jan 15, 2025 at 2:30 PM</p>
-              </div>
-            </div>
-            <div className="flex items-start p-2.5 bg-background rounded-xl w-full">
-              <div className="h-8 w-8 rounded-full mr-3 flex-shrink-0 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-textcolor"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
-              </div>
-              <div className="text-left">
-                <p className="text-sm font-medium">New employee added - John Smith</p>
-                <p className="text-xs text-gray-500">Jan 14, 2025 at 11:15 AM</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        
 
         <div className="flex space-x-4 pt-4">
           <Button className="flex-1 hover:bg-gray-800" onClick={handleSave} disabled={isSaving}>Save Changes</Button>
-          <Button variant="outline" className="flex-1" onClick={onClose}>
+          <Button variant="primary" className="flex-1" onClick={onClose}>
             Cancel
           </Button>
         </div>

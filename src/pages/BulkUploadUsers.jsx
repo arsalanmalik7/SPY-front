@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bulkUploadEmployees } from '../services/bulk';
 import { RestaurantsService } from '../services/Restaurants';
+import * as XLSX from "xlsx";
 
 export default function BulkUploadUsers() {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ export default function BulkUploadUsers() {
   const [selectedRestaurant, setSelectedRestaurant] = useState('');
   const [fileName, setFileName] = useState('');
   const [dragActive, setDragActive] = useState(false);
+  const allowedUserHeaders = ["firstName", "lastName", "email", "role"];
+
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -49,36 +52,48 @@ export default function BulkUploadUsers() {
   };
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      const allowedMimeTypes = [
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      ];
-      const allowedExtensions = ['.xls', '.xlsx'];
-      const fileExtension = '.' + selectedFile.name.split('.').pop().toLowerCase();
+  const selectedFile = e.target.files[0];
+  if (!selectedFile) return;
 
-      if (!allowedMimeTypes.includes(selectedFile.type) && !allowedExtensions.includes(fileExtension)) {
-        setErrors({ file: 'Please upload an Excel file (.xls, .xlsx)' });
-        return;
-      }
-      setFile(selectedFile);
-      setErrors({});
-      setFileName(selectedFile.name);
+  const allowedMimeTypes = [
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ];
+  const allowedExtensions = ['.xls', '.xlsx'];
+  const fileExtension = '.' + selectedFile.name.split('.').pop().toLowerCase();
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const text = e.target.result;
-        setPreview(text);
+  if (!allowedMimeTypes.includes(selectedFile.type) && !allowedExtensions.includes(fileExtension)) {
+    setErrors({ file: 'Please upload an Excel file (.xls, .xlsx)' });
+    return;
+  }
 
-        // Parse CSV data
-        const rows = text.split('\n').map(row => row.split(','));
-        setCsvData(rows);
-      };
-      reader.readAsText(selectedFile);
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    const headers = jsonData[0].map(h => h?.toString().trim().replace(/[\uFEFF\u200B]/g, ''));
+
+    const unexpectedHeaders = headers.filter((h) => !allowedUserHeaders.includes(h));
+    const missingHeaders = allowedUserHeaders.filter((h) => !headers.includes(h));
+
+    if (unexpectedHeaders.length > 0 || missingHeaders.length > 0) {
+      setErrors({
+        file: `Invalid file format.\nMissing headers: ${missingHeaders.join(', ') || 'None'}\nUnexpected headers: ${unexpectedHeaders.join(', ') || 'None'}`
+      });
+      setFile(null);
+      return;
     }
+
+    setFile(selectedFile);
+    setFileName(selectedFile.name);
+    setErrors({});
+    setCsvData(jsonData);
   };
+  reader.readAsArrayBuffer(selectedFile);
+};
 
   const handleDownloadTemplate = () => {
     const template = `
@@ -317,7 +332,7 @@ export default function BulkUploadUsers() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={isUploading || !file}
+                disabled={isUploading || !file ||!selectedRestaurant}
                 className="px-4 py-2 bg-primary text-white rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isUploading ? 'Uploading...' : 'Upload Users'}
