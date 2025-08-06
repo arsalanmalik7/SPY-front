@@ -16,6 +16,7 @@ const ReviewMistakesPanel = ({
 
   
   const currentMistake = mistakes[currentIndex];
+  console.log('Current Mistake:', currentMistake);
 
   return (
     <div className="fixed inset-0 z-[200] w-full h-full bg-[#fcf7ec] overflow-auto">

@@ -314,7 +314,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
         errors.vintage = `Vintage must be between 1800 and ${currentYear}`;
       }
     }
-    
+
     setValidationErrors(errors);
     const topLevelErrors = Object.keys(errors).filter(key => {
       if (key === "region") {
@@ -322,7 +322,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
       }
       return true; // e.g., producer_name, category, etc.
     });
-  
+
     return topLevelErrors.length === 0;
   };
 
@@ -420,7 +420,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
     }
 
 
-    
+
     try {
       setError(null);
       onSave(formData, imageFile);
@@ -1009,6 +1009,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
               }
               placeholder="Glass Price"
               className="w-1/2 p-2 border bg-background border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              disabled={!formData.offering?.by_the_glass}
             />
             <input
               type="number"
@@ -1026,6 +1027,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
               }
               placeholder="Bottle Price"
               className="w-1/2 p-2 border bg-background border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              disabled={!formData.offering?.by_the_bottle}
             />
           </div>
         </div>
