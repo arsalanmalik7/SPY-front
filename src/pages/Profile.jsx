@@ -16,10 +16,14 @@ const formatDate = (dateString) => {
 export default function ProfilePage() {
   const [showAllRestaurants, setShowAllRestaurants] = useState(true);
   // In a real app, you would fetch this data from your API
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState();
 
 
   useEffect(() => {
+    const profileData = JSON.parse(localStorage.getItem('userinfo') || "{}");
+    if (profileData) {
+      setUserData(profileData);
+    }
     const fetchUserData = async () => {
       try {
         const currentUser = await authService.getProfile();
@@ -90,9 +94,9 @@ export default function ProfilePage() {
                     )}
                   </div>
                   <div className="text-left">
-                    <h2 className="text-xl font-bold text-gray-900">{userData.first_name + " " + userData.last_name}</h2>
-                    <p className="text-gray-600">{userData.role === "super_admin" ? "Super Admin" : userData.role}</p>
-                    <p className="text-gray-500 text-sm">{userData.email}</p>
+                    <h2 className="text-xl font-bold text-gray-900">{userData?.first_name + " " + userData?.last_name}</h2>
+                    <p className="text-gray-600">{userData?.role === "super_admin" ? "Super Admin" : userData?.role}</p>
+                    <p className="text-gray-500 text-sm">{userData?.email}</p>
                   </div>
                 </div>
                 <div className="flex space-x-3">
@@ -218,7 +222,7 @@ export default function ProfilePage() {
                       </h4>
                       {/* Show additional context */}
                       <p className="text-xs text-gray-600 mb-1">
-                        {badge.category} {badge.chapter_name ? 'Chapter' : 'Unit'} Expert
+                        {badge.category} {badge.chapter_name ? 'chapter' : 'cnit'} expert
                       </p>
                       <p className="text-xs text-gray-500">Score: {badge.score}</p>
                       <p className="text-xs text-gray-500">Earned: {formatDate(badge.earned_at)}</p>

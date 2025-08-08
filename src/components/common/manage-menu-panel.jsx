@@ -22,19 +22,19 @@ export default function ManageMenuPanel({
     categoryDistribution: [
       {
         name: "Main Course",
-        percentage: dishAnalyticsData?.mainCourseDishPercentage,
+        percentage: dishAnalyticsData?.mainCourseDishPercentage?.toFixed(2) || 0,
       },
       {
         name: "Appetizers",
-        percentage: dishAnalyticsData?.appetizerDishPercentage,
+        percentage: dishAnalyticsData?.appetizerDishPercentage?.toFixed(2) || 0,
       },
       {
         name: "Desserts",
-        percentage: dishAnalyticsData?.dessertDishPercentage,
+        percentage: dishAnalyticsData?.dessertDishPercentage?.toFixed(2) || 0,
       },
       {
         name: "Specials",
-        percentage: dishAnalyticsData?.specialDishPercentage,
+        percentage: dishAnalyticsData?.specialDishPercentage?.toFixed(2) || 0,
       },
     ],
     dietaryOptions: [
@@ -60,10 +60,10 @@ export default function ManageMenuPanel({
             : "",
           time: update.timestamp
             ? new Date(update.timestamp).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
             : "",
         };
       }
@@ -77,19 +77,19 @@ export default function ManageMenuPanel({
     removedWines: wineAnalyticsData.removedWinesInThirtyDays,
     lastUpdated: wineAnalyticsData.lastUpdatedWine,
     categoryDistribution: [
-      { name: "Red Wine", percentage: wineAnalyticsData.redWinePercentage },
-      { name: "White Wine", percentage: wineAnalyticsData.whiteWinePercentage },
+      { name: "Red Wine", percentage: wineAnalyticsData.redWinePercentage?.toFixed(2) || 0 },
+      { name: "White Wine", percentage: wineAnalyticsData.whiteWinePercentage?.toFixed(2) || 0 },
       {
         name: "Sparkling",
-        percentage: wineAnalyticsData.sparklingWinePercentage,
+        percentage: wineAnalyticsData.sparklingWinePercentage?.toFixed(2) || 0,
       },
-      { name: "Rosé", percentage: wineAnalyticsData.roseWinePercentage },
+      { name: "Rosé", percentage: wineAnalyticsData.roseWinePercentage?.toFixed(2) || 0 },
     ],
     regionDistribution: [
-      { name: "France", percentage: wineAnalyticsData.frnaceRegionPercentage },
-      { name: "Italy", percentage: wineAnalyticsData.italyRegionPercentage },
-      { name: "USA", percentage: wineAnalyticsData.usaRegionPercentage },
-      { name: "Others", percentage: wineAnalyticsData.otherRegionPercentage },
+      { name: "France", percentage: wineAnalyticsData.frnaceRegionPercentage?.toFixed(2) || 0 },
+      { name: "Italy", percentage: wineAnalyticsData.italyRegionPercentage?.toFixed(2) || 0 },
+      { name: "USA", percentage: wineAnalyticsData.usaRegionPercentage?.toFixed(2) || 0 },
+      { name: "Others", percentage: wineAnalyticsData.otherRegionPercentage?.toFixed(2) || 0 },
     ],
     grapeVarietals: [
       {
@@ -103,11 +103,11 @@ export default function ManageMenuPanel({
     wineStyles: [
       {
         name: "Full-bodied Red",
-        percentage: wineAnalyticsData.fullBodiedRedPercentage,
+        percentage: wineAnalyticsData.fullBodiedRedPercentage?.toFixed(2) || 0,
       },
-      { name: "Crisp White", percentage: wineAnalyticsData.crispWhite },
-      { name: "Sweet Dessert", percentage: wineAnalyticsData.sweetDessert },
-      { name: "Sparkling", percentage: wineAnalyticsData.sparkling },
+      { name: "Crisp White", percentage: wineAnalyticsData.crispWhite?.toFixed(2) || 0 },
+      { name: "Sweet Dessert", percentage: wineAnalyticsData.sweetDessert?.toFixed(2) || 0 },
+      { name: "Sparkling", percentage: wineAnalyticsData.sparkling?.toFixed(2) || 0 },
     ],
     characteristics: [
       { name: "Organic", count: wineAnalyticsData.organicWines },
@@ -130,10 +130,10 @@ export default function ManageMenuPanel({
             : "",
           time: update.timestamp
             ? new Date(update.timestamp).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
             : "",
         };
       }
@@ -328,11 +328,10 @@ export default function ManageMenuPanel({
           <div className="grid w-full grid-cols-2 rounded-md overflow-hidden">
             <button
               onClick={() => setActiveTab("food")}
-              className={`flex items-center justify-center gap-2 py-2 px-4 ${
-                activeTab === "food"
-                  ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 border border-red-600"
-              }`}
+              className={`flex items-center justify-center gap-2 py-2 px-4 ${activeTab === "food"
+                ? "bg-red-600 text-white"
+                : "bg-gray-100 text-gray-700 border border-red-600"
+                }`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -371,11 +370,10 @@ export default function ManageMenuPanel({
             </button>
             <button
               onClick={() => setActiveTab("wine")}
-              className={`flex items-center justify-center gap-2 py-2 px-4 ${
-                activeTab === "wine"
-                  ? "bg-red-600 text-white"
-                  : "bg-gray-100 text-gray-700 border border-red-600"
-              }`}
+              className={`flex items-center justify-center gap-2 py-2 px-4 ${activeTab === "wine"
+                ? "bg-red-600 text-white"
+                : "bg-gray-100 text-gray-700 border border-red-600"
+                }`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -715,15 +713,14 @@ export default function ManageMenuPanel({
                     className="flex items-center gap-2 bg-background p-2 rounded-lg border border-amber-100"
                   >
                     <div
-                      className={`h-3 w-3 rounded-full ${
-                        category.name === "Red Wine"
-                          ? "bg-red-600"
-                          : category.name === "White Wine"
+                      className={`h-3 w-3 rounded-full ${category.name === "Red Wine"
+                        ? "bg-red-600"
+                        : category.name === "White Wine"
                           ? "bg-amber-400"
                           : category.name === "Sparkling"
-                          ? "bg-yellow-400"
-                          : "bg-pink-400"
-                      }`}
+                            ? "bg-yellow-400"
+                            : "bg-pink-400"
+                        }`}
                     ></div>
                     <span className="text-sm">{category.name}</span>
                     <span className="text-sm text-gray-500 ml-auto">
@@ -896,12 +893,51 @@ export default function ManageMenuPanel({
                                 </svg>
                               </div>
                             )}
+                            {update.type === "updated" && (
+                              <div className="bg-blue-100 p-1 rounded-full">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-4 w-4 text-blue-600"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                  />
+                                </svg>
+                              </div>
+                            )}
+                            {update.type === "restored" && (
+                              <div className="bg-green-100 p-1 rounded-full">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-4 w-4 text-green-600"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                  />
+                                </svg>
+                              </div>
+                            )}
+
                           </div>
                           <div className="flex-1  text-left">
                             <div className="font-medium">
                               {update.type === "added" && "New Wine Added"}
                               {update.type === "price" && "Price Update"}
                               {update.type === "removed" && "Wine Archived"}
+                              {update.type === "updated" && "Wine Updated"}
+                              {update.type === "restored" && "Wine Restored"}
                             </div>
                             <div className="text-sm text-gray-600">
                               {update.item}

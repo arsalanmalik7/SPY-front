@@ -146,22 +146,31 @@ export default function UserTable({ users, onEditUser }) {
               </td>
               <td className="px-4 py-4">
                 <div className="flex items-center">
-                  <div className="p-3 rounded-full bg-gray-200 flex-shrink-0 mr-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
+                  {user?.image_url ? (
+                    <img
+                      src={process.env.REACT_APP_IMAGE_BASE_URL + user?.image_url}
+                      alt={`${user.first_name} ${user.last_name}`}
+                      className="h-10 w-10 rounded-full object-cover mr-3"
+                    />
+                  ) : (
+                    <div className="p-3 rounded-full bg-gray-200 flex-shrink-0 mr-3">
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </div>
+                  )}
                   <div className="text-left">
                     <div className="text-sm font-medium text-gray-900">{`${user.first_name} ${user.last_name}` || "-"}</div>
                     <div className="text-sm text-gray-500">{user.email || "-"}</div>
@@ -176,9 +185,9 @@ export default function UserTable({ users, onEditUser }) {
                 <div className="text-sm text-gray-900">{getRestaurantNames(user.assigned_restaurants)}</div>
               </td>
               <td className="px-4 py-4">
-                <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                <span className={`px-2 py-1 text-xs font-medium rounded-full ${!user?.last_login && 'bg-yellow-100 text-yellow-800' || (user.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')
                   }`}>
-                  {user.active ? 'Active' : 'Inactive'}
+                  {!user?.last_login && 'Pending' || (user.active ? 'Active' : 'Inactive')}
                 </span>
               </td>
               <td className="px-4 py-4 text-sm text-gray-500">

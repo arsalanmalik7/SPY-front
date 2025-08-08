@@ -30,12 +30,12 @@ Jane,Smith,jane@example.com,Employee`;
 
   return (
     <div className="min-h-screen py-6">
-      <h3 className="text-md text-gray-600 mb-5 text-left">Please ensure your CSV file contains the following columns with the correct formatting. Download our template or format your file according to these specifications.</h3>
+      <h3 className="text-md text-gray-600 mb-5 text-left">Please ensure your file contains the following columns with the correct formatting. Download our template or format your file according to these specifications.</h3>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex flex-wrap justify-between items-center gap-4">
-              <h1 className="text-2xl font-semibold text-gray-900">CSV Template Guide</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">(XLSX, XLS & CSV) Template Guide</h1>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={handleDownloadTemplate}

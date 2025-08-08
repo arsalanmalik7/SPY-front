@@ -18,7 +18,7 @@ export default function ViewEmployeesPanel({ restaurant, onClose }) {
       .finally(() => setLoading(false));
   }, [restaurant?.uuid]);
 
-  
+
 
   return (
     <div className="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-[50%] bg-white border-l border-gray-200 shadow-lg z-50 overflow-y-auto">
@@ -58,7 +58,7 @@ export default function ViewEmployeesPanel({ restaurant, onClose }) {
 
             {/* Active vs Inactive */}
             <div>
-              <div className="font-semibold text-center mb-2">Active vs. Inactive (Last 7 Days)</div>
+              <div className="font-semibold text-center mb-2">Active vs. Inactive</div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#FFF4D6] rounded-xl p-4 flex flex-col items-center">
                   <div className="text-2xl font-bold text-gray-700">{data.activeEmployees}</div>
@@ -74,9 +74,9 @@ export default function ViewEmployeesPanel({ restaurant, onClose }) {
                   <div className="text-2xl font-bold text-gray-700">{data.inactiveEmployees}</div>
                   <div className="text-sm text-gray-600">Inactive</div>
                   <div className="mt-2 text-[#7C1D37]">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12l-2-2-4 4" />
+                      <line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                     </svg>
                   </div>
                 </div>

@@ -9,7 +9,7 @@ const USER_ROLES = {
 
 const authService = {
 
-  
+
 
   login: async (email, password) => {
     try {
@@ -31,7 +31,8 @@ const authService = {
 
       return response.data;
     } catch (error) {
-      throw error.response?.data || { message: 'An error occurred during login' };
+      console.error('Login error:', error);
+      throw { message: error?.message } || { message: error.response?.data } || { message: 'An error occurred during login' };
     }
   },
 

@@ -48,6 +48,14 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // console.log(error.response.data.message || "Access denied");
+    if (error.response.status === 403) {
+      // Handle access denied errors
+      authService.logout();
+      window.location.href = '/login';
+      return Promise.reject({ message: error.response.data.message || "Access denied" });
+    }
+
     return Promise.reject(error);
   }
 );

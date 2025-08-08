@@ -80,7 +80,8 @@ const roleRouteMap = {
     "/previous-menu",
     "/subscription",
     "/profile-security",
-    "/bulk-upload-users"
+    "/bulk-upload-users",
+    "csv-template-guide"
   ],
   director: [
     "/dashboard",
@@ -96,7 +97,8 @@ const roleRouteMap = {
     "/previous-menu",
     "/subscription",
     "/profile-security",
-    "/bulk-upload-users"
+    "/bulk-upload-users",
+    "csv-template-guide"
   ],
   employee: [
     "/my-lessons",

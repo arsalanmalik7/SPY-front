@@ -86,7 +86,9 @@ export default function Header({ setSidebarOpen }) {
   const { title, subtitle } = getHeaderInfo(location.pathname)
   const navigate = useNavigate()
   const [dropdownOpen, setDropdownOpen] = React.useState(false)
-  
+  const dropdownRef = React.useRef(null)
+  const avatarRef = React.useRef(null);
+
   // Get user data from localStorage
   const userData = JSON.parse(localStorage.getItem('userinfo') || "{}");
 
@@ -103,6 +105,36 @@ export default function Header({ setSidebarOpen }) {
   const closeDropdown = () => {
     setDropdownOpen(false)
   }
+
+  const handleAvatarMouseDown = (e) => {
+    // Prevent outside click handler from firing
+    e.stopPropagation();
+    setDropdownOpen((prev) => !prev);
+  };
+
+  // Add this effect for outside click
+  React.useEffect(() => {
+    if (!dropdownOpen) return;
+    function handleClickOutside(event) {
+      // If click is on avatar, do nothing (avatar toggles itself)
+      if (
+        avatarRef.current &&
+        avatarRef.current.contains(event.target)
+      ) {
+        return;
+      }
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
 
   return (
     <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
@@ -155,7 +187,7 @@ export default function Header({ setSidebarOpen }) {
               />
             </svg> */}
           </div>
-          <button className="p-2 text-textcolor  rounded-full hover:bg-gray-100">
+          {/* <button className="p-2 text-textcolor  rounded-full hover:bg-gray-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 text-textcolor"
@@ -190,11 +222,12 @@ export default function Header({ setSidebarOpen }) {
             <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
               2
             </span>
-          </button>
+          </button> */}
           <div className="relative">
             <div
+              ref={avatarRef}
               className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 cursor-pointer"
-              onClick={handleAvatarClick}
+              onMouseDown={handleAvatarMouseDown}
               tabIndex={0}
             >
               {userData?.image_url ? (
@@ -221,7 +254,11 @@ export default function Header({ setSidebarOpen }) {
               )}
             </div>
 
-            {dropdownOpen && <UserProfileDropdown user={userData} onClose={closeDropdown} handleLogout={handleLogout} />}
+            {dropdownOpen && (
+              <div ref={dropdownRef}>
+                <UserProfileDropdown user={userData} onClose={closeDropdown} handleLogout={handleLogout} />
+              </div>
+            )}
           </div>
         </div>
       </div>

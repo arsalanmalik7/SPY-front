@@ -138,7 +138,8 @@ export default function RestaurantManagement() {
     handleOpenSidePanel("editRestaurant", restaurant)
   }
 
-  const handleSaveRestaurant = async (activeSidePanel, callback) => {
+  const handleSaveRestaurant = async (activeSidePanel, formData, error) => {
+    console.log("and error:", error);
     try {
       // Uncomment and use the correct API call
       // if (activeSidePanel === "editRestaurant" && selectedRestaurant) {
@@ -152,9 +153,15 @@ export default function RestaurantManagement() {
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
       } else if (activeSidePanel === "addRestaurant") {
+        if (typeof error === "string") {
+          setSnackbarMessage(error);
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+        }else {
         setSnackbarMessage("Restaurant added!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
+        }
       } else if (activeSidePanel === "editRestaurant") {
         setSnackbarMessage("Restaurant updated!");
         setSnackbarSeverity("success");
@@ -163,7 +170,7 @@ export default function RestaurantManagement() {
       // Refresh the restaurants list
       const data = await RestaurantsService.getAllRestaurants();
       setRestaurants(data);
-      if (callback) callback();
+      // if (callback) callback();
     } catch (error) {
       console.error('Error saving restaurant:', error);
       setSnackbarMessage(error.response?.data?.message || 'Error saving restaurant');
@@ -343,7 +350,7 @@ export default function RestaurantManagement() {
       {(activeSidePanel === "addRestaurant" || activeSidePanel === "editRestaurant") && (
         <AddRestaurantPanel
           restaurant={activeSidePanel === "editRestaurant" ? selectedRestaurant : null}
-          onSave={() => handleSaveRestaurant(activeSidePanel)}
+          onSave={(formData, error) => handleSaveRestaurant(activeSidePanel, formData, error)}
           onClose={handleCloseSidePanel}
         />
       )}

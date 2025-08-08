@@ -7,7 +7,7 @@ export const DashboardService = {
   getAllStats: async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`${API_URL}/users/all-data`, {
+      const response = await axiosInstance.get(`/users/all-data`, {
         headers: {
           'Content-Type': 'application/json',
           "ngrok-skip-browser-warning": "true",
@@ -24,7 +24,7 @@ export const DashboardService = {
   getActivityLogs: async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`${API_URL}/users/logs`, {
+      const response = await axiosInstance.get(`/users/logs`, {
         headers: {
           'Content-Type': 'application/json',
           "ngrok-skip-browser-warning": "true",

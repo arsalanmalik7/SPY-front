@@ -469,6 +469,7 @@ export const MyLessons = () => {
               setLessons(data);
             }
           }}
+          allChaptersForUnit={lessons.filter(l => l.category === 'wine' && `Unit ${l.unit}: ${l.unit_name}` === quizPanel.unit)}
           menuData={lessons.find(l => l.uuid === quizPanel.lessonUuid)?.menu}
           attemptedQuestions={quizPanel.attemptedQuestions}
         />

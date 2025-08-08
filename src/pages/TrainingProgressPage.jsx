@@ -237,8 +237,40 @@ const TrainingProgressPage = () => {
           {/* Food Lesson Card */}
           <div className="rounded-lg p-3 flex flex-col gap-2 bg-white">
             <div className="flex items-center gap-2 text-[#C1121F] font-semibold text-base">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              {progressData.food.foodDueLessons[0]?.unit_name || 'No upcoming lessons'}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {/* Top Bun */}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 10c0-3 4-5 8-5s8 2 8 5"
+                />
+                {/* Patty */}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 13h16"
+                />
+                {/* Bottom Bun */}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16c0 1.5 4 2 8 2s8-.5 8-2"
+                />
+                {/* Optional toppings (e.g. sesame seeds as dots) */}
+                <circle cx="8" cy="9" r="0.5" fill="currentColor" />
+                <circle cx="12" cy="8.5" r="0.5" fill="currentColor" />
+                <circle cx="16" cy="9" r="0.5" fill="currentColor" />
+              </svg>
+              {progressData.food.foodDueLessons[0]?.chapter_name || 'No upcoming lessons'}
             </div>
             <Button variant="primary" size="md" className="w-full !rounded !py-2 !text-base !font-semibold">
               {progressData.food.foodDueLessons[0]?.progress?.[0]?.status === 'in_progress' ? 'In Progress' : 'Not Started'}
@@ -247,8 +279,40 @@ const TrainingProgressPage = () => {
           {/* Wine Lesson Card */}
           <div className="rounded-lg p-3 flex flex-col gap-2 bg-white">
             <div className="flex items-center gap-2 text-[#C1121F] font-semibold text-base">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-              {progressData.wine.wineDueLessons[0]?.unit_name || 'No upcoming lessons'}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 3h10c0 4-2 7-5 8-3-1-5-4-5-8z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 11v7"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 18h6"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M8 6c1 2 2.5 3.5 4 4 1.5-.5 3-2 4-4"
+                  opacity="0.6"
+                />
+              </svg>
+              {progressData.wine.wineDueLessons[0]?.chapter_name || 'No upcoming lessons'}
             </div>
             <Button size="md" className="w-full !rounded !py-2 !text-base !font-semibold">
               {progressData.wine.wineDueLessons[0]?.progress?.[0]?.status === 'in_progress' ? 'In Progress' : 'Not Started'}
@@ -264,7 +328,39 @@ const TrainingProgressPage = () => {
           <div className="px-4 pt-3 pb-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-4 h-4 flex items-center justify-center text-[#C1121F]">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10" strokeWidth="2" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {/* Top Bun */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 10c0-3 4-5 8-5s8 2 8 5"
+                  />
+                  {/* Patty */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 13h16"
+                  />
+                  {/* Bottom Bun */}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16c0 1.5 4 2 8 2s8-.5 8-2"
+                  />
+                  {/* Optional toppings (e.g. sesame seeds as dots) */}
+                  <circle cx="8" cy="9" r="0.5" fill="currentColor" />
+                  <circle cx="12" cy="8.5" r="0.5" fill="currentColor" />
+                  <circle cx="16" cy="9" r="0.5" fill="currentColor" />
+                </svg>
               </span>
               <span className="text-lg font-semibold text-black">Food Lessons</span>
             </div>

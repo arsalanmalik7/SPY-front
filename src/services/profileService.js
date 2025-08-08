@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from './axiosConfig';
 
 const API_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -7,7 +7,7 @@ export const profileService = {
     try {
       const token = localStorage.getItem('accessToken');
       
-      const response = await axios.put(`${API_URL}/users/edit-profile`, formData, {
+      const response = await axiosInstance.put(`/users/edit-profile`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
