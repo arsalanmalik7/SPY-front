@@ -52,7 +52,7 @@ export default function LessonProgressPanel({ restaurant, onClose }) {
                 <p className="text-xs text-gray-500">Assigned Training</p>
               </div>
               <div className="p-2.5 bg-background rounded-xl text-left">
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Modules Completed</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Chapters Completed</h3>
                 <p className="text-2xl font-bold text-textcolor">{data.completedLessons ?? 0}</p>
                 <p className="text-xs text-gray-500">Out of {data.totalLessons ?? 0}</p>
               </div>

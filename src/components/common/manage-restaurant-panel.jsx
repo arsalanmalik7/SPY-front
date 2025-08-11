@@ -28,7 +28,7 @@ export default function ManageRestaurantPanel({ restaurant, onClose, fetchData }
 
   const handleSave = async () => {
     setIsSaving(true);
-    
+
     try {
       await RestaurantsService.updateRestaurant(restaurant.uuid, {
         name: restaurantName,
@@ -167,7 +167,15 @@ export default function ManageRestaurantPanel({ restaurant, onClose, fetchData }
               {/* Managers List (show up to 3) */}
               {restaurant?.managers?.slice(0, 3).map((manager, idx) => (
                 <div key={manager?.uuid || idx} className={`flex items-center p-2.5 bg-background rounded-xl w-full${idx > 0 ? ' mt-2' : ''}`}>
-                  <div className="h-8 w-8 rounded-full bg-gray-200 mr-2 flex-shrink-0"></div>
+                  {manager?.image_url
+                    ? <img src={manager.image_url} alt={`${manager.first_name} ${manager.last_name}`} className="h-8 w-8 rounded-full mr-2 flex-shrink-0" />
+                    :
+                    <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-700">
+                      {manager?.first_name && manager?.last_name
+                        ? `${manager?.first_name[0]}${manager?.last_name[0]}`
+                        : 'MN'}
+                    </div>
+                  }
                   <p className="text-sm">{manager?.first_name} {manager?.last_name}</p>
                 </div>
               ))}
@@ -206,14 +214,12 @@ export default function ManageRestaurantPanel({ restaurant, onClose, fetchData }
                     : 'EM'}
                 </div>
               ))}
-              {restaurant?.employees?.length > 5 && (
-                <button className="text-red-600 text-sm ml-2" onClick={() => setShowEmployeesModal(true)}>View Full List</button>
-              )}
+
             </div>
           </div>
         </div>
 
-        
+
 
         <div className="flex space-x-4 pt-4">
           <Button className="flex-1 hover:bg-gray-800" onClick={handleSave} disabled={isSaving}>Save Changes</Button>

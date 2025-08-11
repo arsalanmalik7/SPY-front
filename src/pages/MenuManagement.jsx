@@ -242,7 +242,7 @@ export default function MenuManagement() {
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ];
-    const allowedExtensions = [".xls", ".xlsx"];
+    const allowedExtensions = [".xls", ".xlsx", ".csv"];
     const fileExtension =
       "." + selectedFile.name.split(".").pop().toLowerCase();
 
@@ -250,7 +250,7 @@ export default function MenuManagement() {
       !allowedMimeTypes.includes(selectedFile.type) &&
       !allowedExtensions.includes(fileExtension)
     ) {
-      setUploadError("Please select an Excel file (.xls, .xlsx)");
+      setUploadError("Please select an Excel file (.xls, .xlsx, .csv)");
       return;
     }
 

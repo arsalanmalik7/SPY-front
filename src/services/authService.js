@@ -1,4 +1,5 @@
 import axiosInstance from './axiosConfig';
+import axios from 'axios';
 
 const USER_ROLES = {
   SUPER_ADMIN: 'super_admin',
@@ -13,7 +14,7 @@ const authService = {
 
   login: async (email, password) => {
     try {
-      const response = await axiosInstance.post('/users/login', {
+      const response = await axios.post(process.env.REACT_APP_API_BASE_URL + '/users/login', {
         email,
         password,
       });
@@ -32,7 +33,7 @@ const authService = {
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
-      throw { message: error?.message } || { message: error.response?.data } || { message: 'An error occurred during login' };
+      throw { message: error?.response?.data?.message } || { message: error?.message } || { message: 'An error occurred during login' };
     }
   },
 

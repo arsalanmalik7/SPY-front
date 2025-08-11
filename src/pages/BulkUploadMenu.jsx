@@ -20,14 +20,14 @@ const BulkUploadMenu = () => {
         'application/vnd.ms-excel',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       ];
-      const allowedExtensions = ['.xls', '.xlsx'];
+      const allowedExtensions = ['.xls', '.xlsx', '.csv'];
       const fileExtension = '.' + selectedFile.name.split('.').pop().toLowerCase();
 
       if (allowedMimeTypes.includes(selectedFile.type) || allowedExtensions.includes(fileExtension)) {
         setFile(selectedFile);
         setError(null);
       } else {
-        setError('Please upload an Excel file (.xls, .xlsx)');
+        setError('Please upload an Excel file (.xls, .xlsx, .csv)');
         setFile(null);
       }
     }

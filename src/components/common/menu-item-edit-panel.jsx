@@ -790,6 +790,25 @@ export default function MenuItemEditPanel({ item, onClose, onSave, isSaving, val
           </FormControl>
         </div>
         {/* Substitutions List */}
+
+        {/* Can Substitute Toggle */}
+        <div className="text-left">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Can you make substitutions for this item?</label>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              name="can_substitute"
+              checked={formData.can_substitute}
+              onChange={handleChange}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-textcolor"></div>
+            <span className="ml-3 text-sm font-medium text-gray-700">
+              {formData.can_substitute ? "Yes" : "No"}
+            </span>
+          </label>
+        </div>
+
         {formData.can_substitute && (
           <div>
             <div className="flex">
@@ -878,7 +897,7 @@ export default function MenuItemEditPanel({ item, onClose, onSave, isSaving, val
           </label>
         </div>
 
-        
+
 
         {/* Submit Buttons */}
         <div className="flex justify-between space-x-2 pt-4">

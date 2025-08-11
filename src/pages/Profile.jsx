@@ -222,7 +222,7 @@ export default function ProfilePage() {
                       </h4>
                       {/* Show additional context */}
                       <p className="text-xs text-gray-600 mb-1">
-                        {badge.category} {badge.chapter_name ? 'chapter' : 'cnit'} expert
+                        {badge.category} {badge.chapter_name ? 'chapter' : 'unit'} expert
                       </p>
                       <p className="text-xs text-gray-500">Score: {badge.score}</p>
                       <p className="text-xs text-gray-500">Earned: {formatDate(badge.earned_at)}</p>

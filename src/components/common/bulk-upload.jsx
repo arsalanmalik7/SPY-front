@@ -31,7 +31,7 @@ export default function BulkUpload() {
         "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ]
-      const allowedExtensions = [".xls", ".xlsx"]
+      const allowedExtensions = [".xls", ".xlsx", ".csv"]
       const fileExtension = "." + file.name.split(".").pop().toLowerCase()
 
       if (
@@ -41,7 +41,7 @@ export default function BulkUpload() {
         setUploadedFile(file)
         setFileUploaded(true)
       } else {
-        alert("Please upload an Excel file (.xls, .xlsx)")
+        alert("Please upload an Excel file (.xls, .xlsx, .csv)")
       }
     }
   }
@@ -68,7 +68,7 @@ export default function BulkUpload() {
         "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ]
-      const allowedExtensions = [".xls", ".xlsx"]
+      const allowedExtensions = [".xls", ".xlsx", ".csv"]
       const fileExtension = "." + file.name.split(".").pop().toLowerCase()
 
       if (
@@ -78,7 +78,7 @@ export default function BulkUpload() {
         setUploadedFile(file)
         setFileUploaded(true)
       } else {
-        alert("Please upload an Excel file (.xls, .xlsx)")
+        alert("Please upload an Excel file (.xls, .xlsx, .csv)")
       }
     }
   }

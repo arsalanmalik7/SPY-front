@@ -125,7 +125,8 @@ export default function RestaurantManagement() {
     }
   };
 
-  const handleCloseSidePanel = () => {
+  const handleCloseSidePanel = (e) => {
+    if (e) e.stopPropagation();
     setActiveSidePanel(null)
     setSelectedRestaurant(null)
   }

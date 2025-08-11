@@ -137,6 +137,9 @@ export default function AddUser() {
       }
     } catch (error) {
       console.error("Error creating user:", error);
+      setSnackbarMessage(error?.message || 'An error occured!');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
       setErrors((prev) => ({
         ...prev,
         submit: error.message || "Failed to create user. Please try again.",

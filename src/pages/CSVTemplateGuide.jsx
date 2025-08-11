@@ -5,28 +5,13 @@ export default function CSVTemplateGuide() {
   const navigate = useNavigate();
 
   const templateData = [
-    { field: 'First Name', required: 'Optional', description: 'User\'s first name', example: 'jane.doe@example.com' },
-    { field: 'Last Name', required: 'Optional', description: 'User\'s last name', example: 'Jane' },
-    { field: 'Email', required: 'Required', description: 'User\'s email address (must be unique)', example: 'Doe' },
-    { field: 'Role', required: 'Required', description: 'User\'s role (Manager, Employee, Director, Server)', example: 'manager' },
-    { field: 'Restaurant', required: 'Required', description: 'Assigned restaurant name', example: 'Restaurant A, Restaurant B' },
+    { field: 'firstName', required: 'Optional', description: 'User\'s first name', example: 'jane.doe@example.com' },
+    { field: 'lastName', required: 'Optional', description: 'User\'s last name', example: 'Jane' },
+    { field: 'email', required: 'Required', description: 'User\'s email address (must be unique)', example: 'Doe' },
+    { field: 'role', required: 'Required', description: 'User\'s role (manager, employee, director)', example: 'manager' },
   ];
 
-  const exampleData = `First Name,Last Name,Email,Role
-John,Doe,john@example.com,Manager
-Jane,Smith,jane@example.com,Employee`;
-
-  const handleDownloadTemplate = () => {
-    const blob = new Blob([exampleData], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'user_template.csv';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  };
+  
 
   return (
     <div className="min-h-screen py-6">
@@ -37,8 +22,8 @@ Jane,Smith,jane@example.com,Employee`;
             <div className="flex flex-wrap justify-between items-center gap-4">
               <h1 className="text-2xl font-semibold text-gray-900">(XLSX, XLS & CSV) Template Guide</h1>
               <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={handleDownloadTemplate}
+                <a
+                  href="./user_template.xlsx"
                   className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
                 >
                   <svg
@@ -56,7 +41,7 @@ Jane,Smith,jane@example.com,Employee`;
                     />
                   </svg>
                   Download Template
-                </button>
+                </a>
                 <button
                   onClick={() => navigate('/bulk-upload-users')}
                   className="text-gray-400 hover:text-gray-500"
@@ -95,23 +80,7 @@ Jane,Smith,jane@example.com,Employee`;
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            <div className="mb-6 text-left">
-              <h3 className="text-lg font-medium mb-2">Notes</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <ul className="list-disc list-inside text-sm text-gray-600 space-y-2">
-                  <li>manage_restaurants</li>
-                  <li>manage_lessons</li>
-                  <li>manage_wine</li>
-                </ul>
-                <ul className="list-disc list-inside text-sm text-gray-600 space-y-2">
-                  <li>manage_dishes</li>
-                  <li>manage_employees</li>
-                  <li>manage_subscriptions</li>
-                </ul>
-              </div>
-            </div>
+            </div>  
 
             <div className="flex justify-end">
               <button
