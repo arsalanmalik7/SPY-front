@@ -185,7 +185,7 @@ export default function AddRestaurantPanel({
     : searchData.directors;
 
   // Get user role from localStorage if not present in user object
-  let userRole = user?.role;
+  let userRole = localStorage.getItem("userRole");
   if (!userRole) {
     try {
       const userData = localStorage.getItem("user");
@@ -200,6 +200,7 @@ export default function AddRestaurantPanel({
   // Only show Directors field if user is not a director
   const showDirectorsField =
     userRole && userRole.toLowerCase() === "super_admin";
+
   const showManagersField =
     (userRole && userRole.toLowerCase() === "super_admin") ||
     (userRole && userRole.toLowerCase() === "director");

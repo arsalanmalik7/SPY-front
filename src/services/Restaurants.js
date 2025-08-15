@@ -26,7 +26,6 @@ export const RestaurantsService = {
 
   createRestaurant: async (restaurantData) => {
     try {
-      console.log('Creating restaurant...', restaurantData);
       const response = await axiosInstance.post('/restaurants/create', restaurantData);
       return response.data;
     } catch (error) {
@@ -37,7 +36,7 @@ export const RestaurantsService = {
 
   updateRestaurant: async (restaurantId, restaurantData) => {
     try {
-      console.log('Updating restaurant...', { restaurantId, restaurantData });
+      
       const response = await axiosInstance.put(`/restaurants/${restaurantId}`, restaurantData);
       return response.data;
     } catch (error) {
