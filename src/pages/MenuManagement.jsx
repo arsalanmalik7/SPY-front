@@ -28,8 +28,8 @@ export default function MenuManagement() {
   const [selectedCountry, setSelectedCountry] = useState("All Countries");
   const [selectedRegion, setSelectedRegion] = useState("All Regions");
   const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [uploadError, setUploadError] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [excelPreviewData, setExcelPreviewData] = useState(null);
@@ -143,38 +143,6 @@ export default function MenuManagement() {
       setLoading(false);
     }
   };
-
-  const locationOptions = [
-    { value: "All Locations", label: "All Locations" },
-    { value: "Downtown", label: "Downtown" },
-    { value: "Uptown", label: "Uptown" },
-  ];
-
-  const dateFilterOptions = [
-    { value: "Date Added", label: "Date Added" },
-    { value: "Last Updated", label: "Last Updated" },
-    { value: "Price", label: "Price" },
-  ];
-
-  const menuOptions = [
-    { value: "Current Menu", label: "Current Menu" },
-    { value: "Previous Menu", label: "Previous Menu" },
-    { value: "Future Menu", label: "Future Menu" },
-  ];
-
-  const countryOptions = [
-    { value: "All Countries", label: "All Countries" },
-    { value: "France", label: "France" },
-    { value: "Italy", label: "Italy" },
-    { value: "USA", label: "USA" },
-  ];
-
-  const regionOptions = [
-    { value: "All Regions", label: "All Regions" },
-    { value: "Bordeaux", label: "Bordeaux" },
-    { value: "Piedmont", label: "Piedmont" },
-    { value: "California", label: "California" },
-  ];
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -299,6 +267,7 @@ export default function MenuManagement() {
   };
 
   const handleFileChange = (e) => {
+    setSelectedFile(null);
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
@@ -332,10 +301,14 @@ export default function MenuManagement() {
           if (unexpectedHeaders.length > 0 || missingHeaders.length > 0) {
             let errorMsg = "";
             if (unexpectedHeaders.length > 0) {
-              errorMsg += `Unexpected column(s): ${unexpectedHeaders.join(", ")}. `;
+              errorMsg += `Unexpected column(s): ${unexpectedHeaders.join(
+                ", "
+              )}. `;
             }
             if (missingHeaders.length > 0) {
-              errorMsg += `Missing required column(s): ${missingHeaders.join(", ")}.`;
+              errorMsg += `Missing required column(s): ${missingHeaders.join(
+                ", "
+              )}.`;
             }
 
             setUploadError(errorMsg.trim());
@@ -343,6 +316,27 @@ export default function MenuManagement() {
             setExcelPreviewHeaders([]);
             setIsFileValid(false);
             return;
+          }
+
+          // Validate every row for vintage column (wine uploads)
+          if (activeTab === "wine" && uploadedHeaders.includes("vintage")) {
+            const vintageIndex = uploadedHeaders.indexOf("vintage");
+            for (let i = 1; i < json.length; i++) {
+              const row = json[i];
+              const vintageValue = row[vintageIndex];
+              console.log(typeof vintageValue);
+              if (
+                vintageValue !== undefined &&
+                vintageValue !== "" &&
+                isNaN(Number(vintageValue))
+              ) {
+                setUploadError("Vintage is required and it must be a number.");
+                setExcelPreviewData(null);
+                setExcelPreviewHeaders([]);
+                setIsFileValid(false);
+                return;
+              }
+            }
           }
 
           setExcelPreviewHeaders(uploadedHeaders);
@@ -761,7 +755,7 @@ export default function MenuManagement() {
             className="fixed inset-0 bg-black opacity-30"
             onClick={() => {
               setShowBulkUploadModal(false);
-              setExcelPreviewData(null);
+              setExcelPreviewData([]);
               setExcelPreviewHeaders([]);
               setSelectedFile(null);
               setUploadError("");
@@ -776,7 +770,7 @@ export default function MenuManagement() {
               <button
                 onClick={() => {
                   setShowBulkUploadModal(false);
-                  setExcelPreviewData(null);
+                  setExcelPreviewData([]);
                   setExcelPreviewHeaders([]);
                   setSelectedFile(null);
                   setUploadError("");
@@ -874,7 +868,9 @@ export default function MenuManagement() {
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
-                    <p className="text-xs text-gray-500">(XLSX, XLS & CSV) up to 10MB</p>
+                    <p className="text-xs text-gray-500">
+                      (XLSX, XLS & CSV) up to 10MB
+                    </p>
                   </div>
                 </div>
               </div>
@@ -884,29 +880,42 @@ export default function MenuManagement() {
                     Excel Data Preview
                   </h3>
                   <div className="overflow-x-auto max-h-96">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table
+                      className="min-w-full border border-gray-400"
+                      style={{ borderCollapse: "collapse" }}
+                    >
+                      <thead>
                         <tr>
                           {excelPreviewHeaders.map((header, index) => (
                             <th
                               key={index}
                               scope="col"
-                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                              className="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-100 border border-gray-400 text-center"
+                              style={{
+                                border: "1px solid #ccc",
+                                background: "#f9f9f9",
+                              }}
                             >
                               {header}
                             </th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody>
                         {excelPreviewData.map((row, rowIndex) => (
                           <tr key={rowIndex}>
-                            {row.map((cell, cellIndex) => (
+                            {excelPreviewHeaders.map((header, cellIndex) => (
                               <td
                                 key={cellIndex}
-                                className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                className="px-3 py-2 text-sm text-gray-800 border border-gray-400 text-center"
+                                style={{
+                                  border: "1px solid #ccc",
+                                  background: "#fff",
+                                }}
                               >
-                                {cell}
+                                {row[cellIndex] !== undefined
+                                  ? row[cellIndex]
+                                  : ""}
                               </td>
                             ))}
                           </tr>

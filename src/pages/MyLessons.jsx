@@ -11,7 +11,6 @@ import authService from "../services/authService";
 import RestaurantSelectModal from "../components/common/RestaurantSelectModal";
 
 const ChapterStatus = ({ status, unitLocked, onStart }) => {
-  
   if (status === "completed" && unitLocked === false)
     return (
       <Badge
@@ -359,8 +358,8 @@ export const MyLessons = () => {
                           .join(", ")}
                         type="wine"
                         locked={
-                          user?.role === "super_admin" &&
                           user?.current_subscription?.plan === "Free trial" &&
+                          user?.role !== "super_admin" &&
                           unit?.unit === 2
                             ? true
                             : false

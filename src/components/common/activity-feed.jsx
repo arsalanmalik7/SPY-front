@@ -1,23 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const getActionIcon = (action) => {
   switch (action) {
-    case 'user_registered':
-      return 'user-plus';
-    case 'login':
-      return 'log-in';
-    case 'login_failed':
-      return 'alert-circle';
-    case 'create_restaurant_success':
-      return 'building';
-    case 'update_lesson_progress':
-      return 'graduation-cap';
-    case 'create_lesson':
-      return 'book';
-    case 'auto_assign_lesson':
-      return 'user-check';
+    case "user_registered":
+      return "user-plus";
+    case "login":
+      return "log-in";
+    case "login_failed":
+      return "alert-circle";
+    case "create_restaurant_success":
+      return "building";
+    case "update_lesson_progress":
+      return "graduation-cap";
+    case "create_lesson":
+      return "book";
+    case "auto_assign_lesson":
+      return "user-check";
+    case "dish_created":
+      return "utensils";
+    case "dish_updated":
+      return "utensils";
+    case "dish_deleted":
+      return "utensils";
+    case "wine_created":
+      return "wine-glass";
+    case "wine_updated":
+      return "wine-glass";
+    case "wine_deleted":
+      return "wine-glass";
     default:
-      return 'activity';
+      return "activity";
   }
 };
 
@@ -25,17 +37,19 @@ const formatTimeAgo = (timestamp) => {
   const date = new Date(timestamp);
   const now = new Date();
   const diffInSeconds = Math.floor((now - date) / 1000);
-  
-  if (diffInSeconds < 60) return 'just now';
+
+  if (diffInSeconds < 60) return "just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  if (diffInSeconds < 604800)
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
   return date.toLocaleDateString();
 };
 
 export default function ActivityFeed({ logs = [], loading }) {
-  const [showAll, setShowAll] = useState(false);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const logsPerPage = 10;
+
   if (loading) {
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-4">
@@ -52,12 +66,17 @@ export default function ActivityFeed({ logs = [], loading }) {
 
   // Ensure logs is an array
   const activityLogs = Array.isArray(logs) ? logs : [];
-  const displayedLogs = showAll ? activityLogs : activityLogs.slice(0, 4);
+  const totalPages = Math.ceil(activityLogs.length / logsPerPage);
+  const startIdx = (currentPage - 1) * logsPerPage;
+  const endIdx = startIdx + logsPerPage;
+  const displayedLogs = activityLogs.slice(startIdx, endIdx);
 
   if (activityLogs.length === 0) {
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <h3 className="text-lg font-semibold text-left text-textcolor mb-4">Recent Activity</h3>
+        <h3 className="text-lg font-semibold text-left text-textcolor mb-4">
+          Recent Activity
+        </h3>
         <p className="text-gray-500 text-center">No recent activity</p>
       </div>
     );
@@ -66,39 +85,91 @@ export default function ActivityFeed({ logs = [], loading }) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl">
       <div className="p-4 border-b border-gray-100">
-        <h3 className="text-lg font-semibold text-left text-textcolor">Recent Activity</h3>
+        <h3 className="text-lg font-semibold text-left text-textcolor">
+          Recent Activity
+        </h3>
       </div>
       <div className="p-2">
         <ul className="divide-y divide-gray-100">
           {displayedLogs.map((log) => (
-            <li key={log._id} className="p-3 hover:bg-gray-50 transition-colors">
+            <li
+              key={log._id}
+              className="p-3 hover:bg-gray-50 transition-colors"
+            >
               <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
                 <div className="p-2 rounded-full bg-textcolor text-gray-100 flex-shrink-0">
-                  {getActionIcon(log.action) === 'user-plus' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {getActionIcon(log.action) === "user-plus" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                       <circle cx="9" cy="7" r="4"></circle>
                       <line x1="19" x2="19" y1="8" y2="14"></line>
                       <line x1="22" x2="16" y1="11" y2="11"></line>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'log-in' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {getActionIcon(log.action) === "log-in" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                       <polyline points="10 17 15 12 10 7"></polyline>
                       <line x1="15" x2="3" y1="12" y2="12"></line>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'alert-circle' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {getActionIcon(log.action) === "alert-circle" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" x2="12" y1="8" y2="12"></line>
                       <line x1="12" x2="12.01" y1="16" y2="16"></line>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'building' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
+                  {getActionIcon(log.action) === "building" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect
+                        width="16"
+                        height="20"
+                        x="4"
+                        y="2"
+                        rx="2"
+                        ry="2"
+                      ></rect>
                       <path d="M9 22V16h6v6"></path>
                       <path d="M8 6h.01"></path>
                       <path d="M16 6h.01"></path>
@@ -108,56 +179,216 @@ export default function ActivityFeed({ logs = [], loading }) {
                       <path d="M16 14h.01"></path>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'graduation-cap' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {getActionIcon(log.action) === "graduation-cap" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                       <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'book' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {getActionIcon(log.action) === "book" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'user-check' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {getActionIcon(log.action) === "user-check" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                       <circle cx="9" cy="7" r="4"></circle>
                       <polyline points="16 11 18 13 22 9"></polyline>
                     </svg>
                   )}
-                  {getActionIcon(log.action) === 'activity' && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+
+                  {getActionIcon(log.action) === "utensils" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      {/* Top Bun */}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 10c0-3 4-5 8-5s8 2 8 5"
+                      />
+                      {/* Patty */}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 13h16"
+                      />
+                      {/* Bottom Bun */}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16c0 1.5 4 2 8 2s8-.5 8-2"
+                      />
+                      {/* Optional toppings (e.g. sesame seeds as dots) */}
+                      <circle cx="8" cy="9" r="0.5" fill="currentColor" />
+                      <circle cx="12" cy="8.5" r="0.5" fill="currentColor" />
+                      <circle cx="16" cy="9" r="0.5" fill="currentColor" />
+                    </svg>
+                  )}
+
+                  {getActionIcon(log.action) === "wine-glass" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 3h10c0 4-2 7-5 8-3-1-5-4-5-8z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 11v7"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 18h6"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1}
+                        d="M8 6c1 2 2.5 3.5 4 4 1.5-.5 3-2 4-4"
+                        opacity="0.6"
+                      />
+                    </svg>
+                  )}
+
+                  {getActionIcon(log.action) === "activity" && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
                   )}
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row justify-between">
-                    <p className="text-sm font-medium text-gray-800">{log.details?.name || log.details?.email || 'Unknown User'}</p>
-                    <span className="text-xs text-gray-500">{formatTimeAgo(log.timestamp)}</span>
+                    <p className="text-sm font-medium text-gray-800">
+                      {log.details?.name ||
+                        log.details?.email ||
+                        (log?.action === "badge_awarded" && "Badge Awarded") ||
+                        (log?.action === "update_lesson_progress" &&
+                          `${log?.user_uuid?.first_name} ${log?.user_uuid?.last_name}`) ||
+                        (log?.action === "dish_created" && "Dish Created") ||
+                        (log?.action === "wine_created" && "Wine Created") ||
+                        (log?.action === "dish_restored" && "Dish Restored") ||
+                        (log?.action === "wine_restored" && "Wine Restored") ||
+                        (log?.action === "dish_updated" && "Dish Updated") ||
+                        (log?.action === "wine_updated" && "Wine Updated") ||
+                        ((log?.action === "dish_deleted" ||
+                          log.action === "dish_archived") &&
+                          "Dish Archived") ||
+                        ((log?.action === "wine_deleted" ||
+                          log.action === "wine_archived") &&
+                          "Wine Archived")}
+                    </p>
+                    <span className="text-xs text-gray-500">
+                      {formatTimeAgo(log.timestamp)}
+                    </span>
                   </div>
                   <p className="text-sm text-gray-600 text-left">
-                    {log.action === 'user_registered' && `Registered as ${log.details?.role}`}
-                    {log.action === 'login' && 'Logged in'}
-                    {log.action === 'login_failed' && 'Failed to login'}
-                    {log.action === 'create_restaurant_success' && `Created restaurant: ${log.details?.name}`}
-                    {log.action === 'update_lesson_progress' && `Updated lesson progress: ${log.details?.score}%`}
-                    {log.action === 'create_lesson' && 'Created new lesson'}
-                    {log.action === 'auto_assign_lesson' && `Assigned lesson to ${log.details?.user_role}`}
+                    {log.action === "user_registered" &&
+                      `Registered as ${log.details?.role}`}
+                    {log.action === "login" && "Logged in"}
+                    {log.action === "login_failed" && "Failed to login"}
+                    {log.action === "create_restaurant_success" &&
+                      `Created restaurant: ${log.details?.name}`}
+                    {log.action === "update_lesson_progress" &&
+                      `Updated lesson progress: ${log.details?.score}%`}
+                    {log.action === "badge_awarded" &&
+                      `${log?.user_uuid?.first_name} ${log?.user_uuid?.last_name} was awarded the ${log.details?.badge_name} badge`}
+                    {log.action === "create_lesson" && "Created new lesson"}
+                    {log.action === "auto_assign_lesson" &&
+                      `Assigned lesson to ${log.details?.user_role}`}
+                    {log.action === "dish_created" && log.details?.description}
+                    {log.action === "wine_created" && log.details?.description}
+                    {log.action === "dish_restored" && log.details?.description}
+                    {log.action === "wine_restored" && log.details?.description}
+                    {log.action === "dish_updated" && log.details?.description}
+                    {log.action === "wine_updated" && log.details?.description}
+                    {(log.action === "dish_deleted" ||
+                      log.action === "dish_archived") &&
+                      log.details?.description}
+                    {(log.action === "wine_deleted" ||
+                      log.action === "wine_archived") &&
+                      log.details?.description}
                   </p>
                 </div>
               </div>
             </li>
           ))}
         </ul>
-        {activityLogs.length > 4 && (
-          <div className="p-3 text-center">
+        {activityLogs.length > logsPerPage && (
+          <div className="p-3 text-center flex justify-center gap-2">
             <button
-              onClick={() => setShowAll(!showAll)}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               className="text-sm text-primary hover:text-primary-dark font-medium"
+              disabled={currentPage === 1}
             >
-              {showAll ? 'See Less...' : 'See More...'}
+              Previous
+            </button>
+            <span className="text-sm mx-2">Page {currentPage} of {totalPages}</span>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              className="text-sm text-primary hover:text-primary-dark font-medium"
+              disabled={currentPage === totalPages}
+            >
+              Next
             </button>
           </div>
         )}
@@ -165,4 +396,3 @@ export default function ActivityFeed({ logs = [], loading }) {
     </div>
   );
 }
-  
