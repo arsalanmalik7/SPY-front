@@ -328,7 +328,7 @@ export default function MenuManagement() {
               if (
                 vintageValue !== undefined &&
                 vintageValue !== "" &&
-                isNaN(Number(vintageValue))
+                isNaN(Number(vintageValue) || vintageValue === "NV")
               ) {
                 setUploadError("Vintage is required and it must be a number.");
                 setExcelPreviewData(null);
@@ -509,7 +509,7 @@ export default function MenuManagement() {
       restaurantname: wine.restaurantname || "",
       styleDisplay: formatStyle(wine.style),
       producerDisplay: wine.producer_name || "",
-      vintageDisplay: wine.vintage || "",
+      vintageDisplay: wine.vintage,
       updatedAt: wine.updatedAt || "2025-04-11T16:51:03.849Z",
     };
   };
