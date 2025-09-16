@@ -168,6 +168,10 @@ export default function MenuItemEditPanel({ item, onClose, onSave, isSaving, val
       errors.type = "Type is required"
     }
 
+    if(!formData.restaurant_uuid) {
+      errors.restaurant = "Restaurant is required"
+    }
+
     if (!formData.price || isNaN(formData.price) || formData.price <= 0) {
       errors.price = "Valid price is required"
     }
@@ -914,4 +918,4 @@ export default function MenuItemEditPanel({ item, onClose, onSave, isSaving, val
       </form>
     </div>
   )
-}
+};
