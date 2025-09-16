@@ -171,7 +171,9 @@ const authService = {
         lesson_progress: [],
         role: userData.role,
         newPassword: userData.newPassword,
-        active: userData.status === "Active" // true if Active, false if Inactive
+        active: userData.status === "Active", // true if Active, false if Inactive
+        current_subscription: userData.current_subscription,
+        lesson_frequency: userData.lesson_frequency
       });
       return response.data;
     } catch (error) {

@@ -356,9 +356,9 @@ export default function AddUser() {
               {errors.role && (
                 <p className="mt-1 text-sm text-red-600">{errors.role}</p>
               )}
-              <p className="text-xs text-gray-500 mt-1 text-left">
+              {/* <p className="text-xs text-gray-500 mt-1 text-left">
                 This form is specifically for creating manager-level users
-              </p>
+              </p> */}
             </div>
 
             {/* Assigned Restaurants */}

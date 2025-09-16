@@ -13,30 +13,20 @@ export default function ManageMenuPanel({
   const [showRecentUpdatesModal, setShowRecentUpdatesModal] = useState(false);
   const [recentUpdatesModalType, setRecentUpdatesModalType] = useState("food");
 
+  console.log(dishAnalyticsData, "dishAnalyticsData?.dishTypesWithPercentages");
+
   // Food analytics data
   const foodAnalytics = {
     totalDishes: dishAnalyticsData?.totalDishes,
     newItems: dishAnalyticsData?.newDishesInThirtyDays,
     removedItems: dishAnalyticsData?.removedDishesInThirtyDays,
     lastUpdated: dishAnalyticsData?.lastUpdatedDish,
-    categoryDistribution: [
-      {
-        name: "Main Course",
-        percentage: dishAnalyticsData?.mainCourseDishPercentage?.toFixed(2) || 0,
-      },
-      {
-        name: "Appetizers",
-        percentage: dishAnalyticsData?.appetizerDishPercentage?.toFixed(2) || 0,
-      },
-      {
-        name: "Desserts",
-        percentage: dishAnalyticsData?.dessertDishPercentage?.toFixed(2) || 0,
-      },
-      {
-        name: "Specials",
-        percentage: dishAnalyticsData?.specialDishPercentage?.toFixed(2) || 0,
-      },
-    ],
+    categoryDistribution: dishAnalyticsData?.dishTypesWithPercentages?.map(
+      (cat) => ({
+        name: cat.type === "Main" ? "Main Course" : `${cat.type}s`,
+        percentage: cat.percentage?.toFixed(2) || 0,
+      })
+    ),
     dietaryOptions: [
       { name: "Vegetarian", count: dishAnalyticsData?.vegetarianDishes },
       { name: "Vegan", count: dishAnalyticsData?.veganDishes },
@@ -60,10 +50,10 @@ export default function ManageMenuPanel({
             : "",
           time: update.timestamp
             ? new Date(update.timestamp).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
             : "",
         };
       }
@@ -77,19 +67,40 @@ export default function ManageMenuPanel({
     removedWines: wineAnalyticsData.removedWinesInThirtyDays,
     lastUpdated: wineAnalyticsData.lastUpdatedWine,
     categoryDistribution: [
-      { name: "Red Wine", percentage: wineAnalyticsData.redWinePercentage?.toFixed(2) || 0 },
-      { name: "White Wine", percentage: wineAnalyticsData.whiteWinePercentage?.toFixed(2) || 0 },
+      {
+        name: "Red Wine",
+        percentage: wineAnalyticsData.redWinePercentage?.toFixed(2) || 0,
+      },
+      {
+        name: "White Wine",
+        percentage: wineAnalyticsData.whiteWinePercentage?.toFixed(2) || 0,
+      },
       {
         name: "Sparkling",
         percentage: wineAnalyticsData.sparklingWinePercentage?.toFixed(2) || 0,
       },
-      { name: "Rosé", percentage: wineAnalyticsData.roseWinePercentage?.toFixed(2) || 0 },
+      {
+        name: "Rosé",
+        percentage: wineAnalyticsData.roseWinePercentage?.toFixed(2) || 0,
+      },
     ],
     regionDistribution: [
-      { name: "France", percentage: wineAnalyticsData.frnaceRegionPercentage?.toFixed(2) || 0 },
-      { name: "Italy", percentage: wineAnalyticsData.italyRegionPercentage?.toFixed(2) || 0 },
-      { name: "USA", percentage: wineAnalyticsData.usaRegionPercentage?.toFixed(2) || 0 },
-      { name: "Others", percentage: wineAnalyticsData.otherRegionPercentage?.toFixed(2) || 0 },
+      {
+        name: "France",
+        percentage: wineAnalyticsData.frnaceRegionPercentage?.toFixed(2) || 0,
+      },
+      {
+        name: "Italy",
+        percentage: wineAnalyticsData.italyRegionPercentage?.toFixed(2) || 0,
+      },
+      {
+        name: "USA",
+        percentage: wineAnalyticsData.usaRegionPercentage?.toFixed(2) || 0,
+      },
+      {
+        name: "Others",
+        percentage: wineAnalyticsData.otherRegionPercentage?.toFixed(2) || 0,
+      },
     ],
     grapeVarietals: [
       {
@@ -105,9 +116,18 @@ export default function ManageMenuPanel({
         name: "Full-bodied Red",
         percentage: wineAnalyticsData.fullBodiedRedPercentage?.toFixed(2) || 0,
       },
-      { name: "Crisp White", percentage: wineAnalyticsData.crispWhite?.toFixed(2) || 0 },
-      { name: "Sweet Dessert", percentage: wineAnalyticsData.sweetDessert?.toFixed(2) || 0 },
-      { name: "Sparkling", percentage: wineAnalyticsData.sparkling?.toFixed(2) || 0 },
+      {
+        name: "Crisp White",
+        percentage: wineAnalyticsData.crispWhite?.toFixed(2) || 0,
+      },
+      {
+        name: "Sweet Dessert",
+        percentage: wineAnalyticsData.sweetDessert?.toFixed(2) || 0,
+      },
+      {
+        name: "Sparkling",
+        percentage: wineAnalyticsData.sparkling?.toFixed(2) || 0,
+      },
     ],
     characteristics: [
       { name: "Organic", count: wineAnalyticsData.organicWines },
@@ -130,10 +150,10 @@ export default function ManageMenuPanel({
             : "",
           time: update.timestamp
             ? new Date(update.timestamp).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
             : "",
         };
       }
@@ -328,10 +348,11 @@ export default function ManageMenuPanel({
           <div className="grid w-full grid-cols-2 rounded-md overflow-hidden">
             <button
               onClick={() => setActiveTab("food")}
-              className={`flex items-center justify-center gap-2 py-2 px-4 ${activeTab === "food"
-                ? "bg-red-600 text-white"
-                : "bg-gray-100 text-gray-700 border border-red-600"
-                }`}
+              className={`flex items-center justify-center gap-2 py-2 px-4 ${
+                activeTab === "food"
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-gray-700 border border-red-600"
+              }`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -370,10 +391,11 @@ export default function ManageMenuPanel({
             </button>
             <button
               onClick={() => setActiveTab("wine")}
-              className={`flex items-center justify-center gap-2 py-2 px-4 ${activeTab === "wine"
-                ? "bg-red-600 text-white"
-                : "bg-gray-100 text-gray-700 border border-red-600"
-                }`}
+              className={`flex items-center justify-center gap-2 py-2 px-4 ${
+                activeTab === "wine"
+                  ? "bg-red-600 text-white"
+                  : "bg-gray-100 text-gray-700 border border-red-600"
+              }`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -448,7 +470,7 @@ export default function ManageMenuPanel({
                 Menu Category Distribution
               </h3>
               <div className="space-y-3">
-                {foodAnalytics.categoryDistribution.map((category) => (
+                {foodAnalytics?.categoryDistribution?.map((category) => (
                   <div key={category.name} className="space-y-1">
                     <div className="flex justify-between text-sm">
                       <div className="flex-1 ">
@@ -707,20 +729,21 @@ export default function ManageMenuPanel({
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                {wineAnalytics.categoryDistribution.map((category) => (
+                {wineAnalytics?.categoryDistribution?.map((category) => (
                   <div
                     key={category.name}
                     className="flex items-center gap-2 bg-background p-2 rounded-lg border border-amber-100"
                   >
                     <div
-                      className={`h-3 w-3 rounded-full ${category.name === "Red Wine"
-                        ? "bg-red-600"
-                        : category.name === "White Wine"
+                      className={`h-3 w-3 rounded-full ${
+                        category.name === "Red Wine"
+                          ? "bg-red-600"
+                          : category.name === "White Wine"
                           ? "bg-amber-400"
                           : category.name === "Sparkling"
-                            ? "bg-yellow-400"
-                            : "bg-pink-400"
-                        }`}
+                          ? "bg-yellow-400"
+                          : "bg-pink-400"
+                      }`}
                     ></div>
                     <span className="text-sm">{category.name}</span>
                     <span className="text-sm text-gray-500 ml-auto">
@@ -929,7 +952,6 @@ export default function ManageMenuPanel({
                                 </svg>
                               </div>
                             )}
-
                           </div>
                           <div className="flex-1  text-left">
                             <div className="font-medium">

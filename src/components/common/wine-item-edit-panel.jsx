@@ -815,6 +815,7 @@ export default function WineItemEditPanel({ item, onClose, onSave, isSaving, val
             const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
             const textColor = luminance < 0.6 ? "#fff" : "#222";
             const isSelected = selectedStyle === style.name;
+            
             return (
               <div
                 key={style.name}

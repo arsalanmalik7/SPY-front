@@ -1,32 +1,32 @@
-import { useState, useEffect } from "react"
-import RestaurantList from "../components/common/restaurant-list"
-import ViewEmployeesPanel from "../components/common/view-employees-panel"
-import LessonProgressPanel from "../components/common/lesson-progress-panel"
-import ManageRestaurantPanel from "../components/common/manage-restaurant-panel"
-import AddRestaurantPanel from "../components/common/add-restaurant-modal"
-import ManageMenuPanel from "../components/common/manage-menu-panel"
-import { RestaurantsService } from "../services/Restaurants"
-import { bulkUploadLessons } from "../services/lessonProgress"
-import authService from "../services/authService"
-import { MenuService } from "../services/MenuService"
-import { Upload } from "lucide-react"
-import { Snackbar, Alert } from '@mui/material';
+import { useState, useEffect } from "react";
+import RestaurantList from "../components/common/restaurant-list";
+import ViewEmployeesPanel from "../components/common/view-employees-panel";
+import LessonProgressPanel from "../components/common/lesson-progress-panel";
+import ManageRestaurantPanel from "../components/common/manage-restaurant-panel";
+import AddRestaurantPanel from "../components/common/add-restaurant-modal";
+import ManageMenuPanel from "../components/common/manage-menu-panel";
+import { RestaurantsService } from "../services/Restaurants";
+import { bulkUploadLessons } from "../services/lessonProgress";
+import authService from "../services/authService";
+import { MenuService } from "../services/MenuService";
+import { Upload } from "lucide-react";
+import { Snackbar, Alert } from "@mui/material";
 
 export default function RestaurantManagement() {
-  const userRole = localStorage.getItem("userRole")
+  const userRole = localStorage.getItem("userRole");
   const user = authService.getCurrentUser();
 
-  const [activeTab, setActiveTab] = useState("all")
-  const [activeSidePanel, setActiveSidePanel] = useState(null)
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null)
-  const [restaurants, setRestaurants] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [uploadError, setUploadError] = useState('')
-  const [isUploading, setIsUploading] = useState(false)
-  const [dragActive, setDragActive] = useState(false)
-  const [jsonPreview, setJsonPreview] = useState(null)
+  const [activeTab, setActiveTab] = useState("all");
+  const [activeSidePanel, setActiveSidePanel] = useState(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadError, setUploadError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [jsonPreview, setJsonPreview] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -36,17 +36,16 @@ export default function RestaurantManagement() {
 
   const fetchRestaurants = async () => {
     try {
-      const data = await RestaurantsService.getAllRestaurants()
+      const data = await RestaurantsService.getAllRestaurants();
 
-      setRestaurants(data)
+      setRestaurants(data);
     } catch (error) {
-      console.error('Error fetching restaurants:', error)
+      console.error("Error fetching restaurants:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
   useEffect(() => {
-
     const fetchProfile = async () => {
       try {
         const profile = await authService.getProfile();
@@ -58,68 +57,66 @@ export default function RestaurantManagement() {
     };
     fetchProfile();
 
-    fetchRestaurants()
-  }, [])
+    fetchRestaurants();
+  }, []);
 
   const handleDrag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
+      setDragActive(true);
     } else if (e.type === "dragleave") {
-      setDragActive(false)
+      setDragActive(false);
     }
-  }
+  };
 
   const handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0])
+      handleFile(e.dataTransfer.files[0]);
     }
-  }
+  };
 
   const handleFile = (file) => {
     if (file.type === "application/json" || file.name.endsWith(".json")) {
-      setSelectedFile(file)
-      setUploadError("")
+      setSelectedFile(file);
+      setUploadError("");
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const json = JSON.parse(e.target.result)
-          setJsonPreview(json)
+          const json = JSON.parse(e.target.result);
+          setJsonPreview(json);
         } catch (error) {
-          setUploadError("Error parsing JSON file.")
-          setJsonPreview(null)
+          setUploadError("Error parsing JSON file.");
+          setJsonPreview(null);
         }
-      }
-      reader.readAsText(file)
+      };
+      reader.readAsText(file);
     } else {
-      setUploadError("Please select a JSON file (.json)")
-      setSelectedFile(null)
-      setJsonPreview(null)
+      setUploadError("Please select a JSON file (.json)");
+      setSelectedFile(null);
+      setJsonPreview(null);
     }
-  }
+  };
 
   const handleTabChange = (tab) => {
-    setActiveTab(tab)
-  }
+    setActiveTab(tab);
+  };
 
   const handleOpenSidePanel = async (panel, restaurant = null) => {
     try {
-
       setActiveSidePanel(panel);
       setSelectedRestaurant(restaurant);
       const [dishAnalytics, wineAnalytics] = await Promise.all([
         MenuService.getDishAnalytics(restaurant?.uuid),
-        MenuService.getWineAnalytics(restaurant?.uuid)
+        MenuService.getWineAnalytics(restaurant?.uuid),
       ]);
 
       setDishAnalyticsData(dishAnalytics);
       setWineAnalyticsData(wineAnalytics);
-
     } catch (error) {
       console.log(error, "error");
     }
@@ -127,17 +124,17 @@ export default function RestaurantManagement() {
 
   const handleCloseSidePanel = (e) => {
     if (e) e.stopPropagation();
-    setActiveSidePanel(null)
-    setSelectedRestaurant(null)
-  }
+    setActiveSidePanel(null);
+    setSelectedRestaurant(null);
+  };
 
   const handleAddRestaurant = () => {
-    handleOpenSidePanel("addRestaurant")
-  }
+    handleOpenSidePanel("addRestaurant");
+  };
 
   const handleEditRestaurant = (restaurant) => {
-    handleOpenSidePanel("editRestaurant", restaurant)
-  }
+    handleOpenSidePanel("editRestaurant", restaurant);
+  };
 
   const handleSaveRestaurant = async (activeSidePanel, formData, error) => {
     console.log("and error:", error);
@@ -150,7 +147,9 @@ export default function RestaurantManagement() {
       // }
       handleCloseSidePanel();
       if (restaurants?.length === 0) {
-        setSnackbarMessage("Restaurant added! Now, add your staff and create your menu to unlock full features.");
+        setSnackbarMessage(
+          "Restaurant added! Now, add your staff and create your menu to unlock full features."
+        );
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
       } else if (activeSidePanel === "addRestaurant") {
@@ -158,10 +157,10 @@ export default function RestaurantManagement() {
           setSnackbarMessage(error);
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
-        }else {
-        setSnackbarMessage("Restaurant added!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
+        } else {
+          setSnackbarMessage("Restaurant added!");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
         }
       } else if (activeSidePanel === "editRestaurant") {
         setSnackbarMessage("Restaurant updated!");
@@ -173,48 +172,55 @@ export default function RestaurantManagement() {
       setRestaurants(data);
       // if (callback) callback();
     } catch (error) {
-      console.error('Error saving restaurant:', error);
-      setSnackbarMessage(error.response?.data?.message || 'Error saving restaurant');
+      console.error("Error saving restaurant:", error);
+      setSnackbarMessage(
+        error.response?.data?.message || "Error saving restaurant"
+      );
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
-  }
-
-
+  };
 
   const handleBulkUpload = async () => {
     if (!selectedFile) {
-      setUploadError('Please select a file');
+      setUploadError("Please select a file");
       return;
     }
 
-    if (selectedFile.type !== "application/json" && !selectedFile.name.endsWith(".json")) {
-      setUploadError("Please select a JSON file (.json)")
-      return
+    if (
+      selectedFile.type !== "application/json" &&
+      !selectedFile.name.endsWith(".json")
+    ) {
+      setUploadError("Please select a JSON file (.json)");
+      return;
     }
 
     setIsUploading(true);
-    setUploadError('');
+    setUploadError("");
 
     try {
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append("file", selectedFile);
 
-      await bulkUploadLessons(formData, 'restaurant');
+      await bulkUploadLessons(formData, "restaurant");
       setShowBulkUploadModal(false);
       setSelectedFile(null);
-      setJsonPreview(null)
+      setJsonPreview(null);
       // Refresh the restaurants list
-      const data = await RestaurantsService.getAllRestaurants()
-      setRestaurants(data)
+      const data = await RestaurantsService.getAllRestaurants();
+      setRestaurants(data);
     } catch (error) {
-      setUploadError(error.response?.data?.message || 'Error uploading restaurants');
+      setUploadError(
+        error.response?.data?.message || "Error uploading restaurants"
+      );
     } finally {
       setIsUploading(false);
     }
   };
 
-  const managerAddedRestaurant = restaurants.filter(restaurant => restaurant?.account_owner?.uuid === user?.uuid);
+  const managerAddedRestaurant = restaurants.filter(
+    (restaurant) => restaurant?.account_owner?.uuid === user?.uuid
+  );
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-background">
@@ -228,28 +234,31 @@ export default function RestaurantManagement() {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => handleTabChange("active")}
-                  className={`px-3 sm:px-4 py-2 rounded-md ${activeTab === "active"
-                    ? "bg-textcolor text-white"
-                    : "bg-white text-gray-700 border border-gray-300"
-                    }`}
+                  className={`px-3 sm:px-4 py-2 rounded-md ${
+                    activeTab === "active"
+                      ? "bg-textcolor text-white"
+                      : "bg-white text-gray-700 border border-gray-300"
+                  }`}
                 >
                   Active
                 </button>
                 <button
                   onClick={() => handleTabChange("inactive")}
-                  className={`px-3 sm:px-4 py-2 rounded-md ${activeTab === "inactive"
-                    ? "bg-textcolor text-white"
-                    : "bg-white text-gray-700 border border-gray-300"
-                    }`}
+                  className={`px-3 sm:px-4 py-2 rounded-md ${
+                    activeTab === "inactive"
+                      ? "bg-textcolor text-white"
+                      : "bg-white text-gray-700 border border-gray-300"
+                  }`}
                 >
                   Inactive
                 </button>
                 <button
                   onClick={() => handleTabChange("all")}
-                  className={`px-3 sm:px-4 py-2 rounded-md ${activeTab === "all"
-                    ? "bg-textcolor text-white"
-                    : "bg-white text-gray-700 border border-gray-300"
-                    }`}
+                  className={`px-3 sm:px-4 py-2 rounded-md ${
+                    activeTab === "all"
+                      ? "bg-textcolor text-white"
+                      : "bg-white text-gray-700 border border-gray-300"
+                  }`}
                 >
                   All
                 </button>
@@ -266,26 +275,34 @@ export default function RestaurantManagement() {
                     </button>
                   </>
                 )}
-                {(managerAddedRestaurant?.length > 0 && userRole === "manager" && userProfile?.current_subscription?.sub_employee) || restaurants.length === userProfile?.current_subscription?.locations ? null : <button
-                  onClick={handleAddRestaurant}
-                  className="px-3 sm:px-4 py-2 bg-textcolor text-white rounded-md flex items-center"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                {(managerAddedRestaurant?.length > 0 &&
+                  userRole === "manager" &&
+                  userProfile?.current_subscription?.sub_employee) ||
+                restaurants.length ===
+                  userProfile?.current_subscription?.locations ||
+                (userProfile?.current_subscription?.plan === "Free trial" &&
+                  restaurants?.length === 0) ? null : (
+                  <button
+                    onClick={handleAddRestaurant}
+                    className="px-3 sm:px-4 py-2 bg-textcolor text-white rounded-md flex items-center"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Add Restaurant
-                </button>}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    Add Restaurant
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -339,19 +356,26 @@ export default function RestaurantManagement() {
         />
       )}
 
-      {activeSidePanel === "manageMenu" && (
-        <ManageMenuPanel
-          restaurant={selectedRestaurant}
-          onClose={handleCloseSidePanel}
-          dishAnalyticsData={dishAnalyticsData}
-          wineAnalyticsData={wineAnalyticsData}
-        />
-      )}
+      {activeSidePanel === "manageMenu" &&
+        dishAnalyticsData?.dishTypesWithPercentages?.length > 0 &&
+        wineAnalyticsData && (
+          <ManageMenuPanel
+            restaurant={selectedRestaurant}
+            onClose={handleCloseSidePanel}
+            dishAnalyticsData={dishAnalyticsData}
+            wineAnalyticsData={wineAnalyticsData}
+          />
+        )}
 
-      {(activeSidePanel === "addRestaurant" || activeSidePanel === "editRestaurant") && (
+      {(activeSidePanel === "addRestaurant" ||
+        activeSidePanel === "editRestaurant") && (
         <AddRestaurantPanel
-          restaurant={activeSidePanel === "editRestaurant" ? selectedRestaurant : null}
-          onSave={(formData, error) => handleSaveRestaurant(activeSidePanel, formData, error)}
+          restaurant={
+            activeSidePanel === "editRestaurant" ? selectedRestaurant : null
+          }
+          onSave={(formData, error) =>
+            handleSaveRestaurant(activeSidePanel, formData, error)
+          }
           onClose={handleCloseSidePanel}
         />
       )}
@@ -361,9 +385,13 @@ export default function RestaurantManagement() {
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
@@ -371,11 +399,19 @@ export default function RestaurantManagement() {
       {/* Bulk Upload Modal */}
       {showBulkUploadModal && (
         <div className="fixed inset-0 z-50 flex">
-          <div className="fixed inset-0 bg-black opacity-30" onClick={() => setShowBulkUploadModal(false)}></div>
+          <div
+            className="fixed inset-0 bg-black opacity-30"
+            onClick={() => setShowBulkUploadModal(false)}
+          ></div>
           <div className="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-[50%] bg-white border-l border-gray-200 shadow-lg z-50 overflow-y-auto">
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-textcolor">Bulk Upload Restaurants</h2>
-              <button onClick={() => setShowBulkUploadModal(false)} className="text-gray-500 hover:text-gray-700">
+              <h2 className="text-lg font-semibold text-textcolor">
+                Bulk Upload Restaurants
+              </h2>
+              <button
+                onClick={() => setShowBulkUploadModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-textcolor"
@@ -383,7 +419,12 @@ export default function RestaurantManagement() {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -392,12 +433,15 @@ export default function RestaurantManagement() {
                 <div>
                   <h3 className="text-lg font-medium mb-2">Upload JSON File</h3>
                   <p className="text-sm text-gray-500">
-                    Upload a JSON file containing restaurant information. Make sure to follow the correct format.
+                    Upload a JSON file containing restaurant information. Make
+                    sure to follow the correct format.
                   </p>
                 </div>
 
                 <div
-                  className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md ${dragActive ? 'bg-gray-100' : ''}`}
+                  className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md ${
+                    dragActive ? "bg-gray-100" : ""
+                  }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
@@ -423,7 +467,9 @@ export default function RestaurantManagement() {
                         htmlFor="file-upload"
                         className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-dark focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary"
                       >
-                        <span>{selectedFile ? selectedFile.name : 'Upload a file'}</span>
+                        <span>
+                          {selectedFile ? selectedFile.name : "Upload a file"}
+                        </span>
                         <input
                           id="file-upload"
                           name="file-upload"
@@ -477,7 +523,7 @@ export default function RestaurantManagement() {
                       onClick={handleBulkUpload}
                       disabled={!selectedFile || isUploading}
                     >
-                      {isUploading ? 'Uploading...' : 'Upload Restaurants'}
+                      {isUploading ? "Uploading..." : "Upload Restaurants"}
                     </button>
                   </div>
                 </div>
@@ -487,6 +533,5 @@ export default function RestaurantManagement() {
         </div>
       )}
     </div>
-  )
+  );
 }
-

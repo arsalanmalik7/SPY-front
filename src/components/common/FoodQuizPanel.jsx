@@ -182,8 +182,12 @@ const FoodQuizPanel = ({
   const q = questions[currentIndex];
 
   useEffect(() => {
-
-    setPerformedQuestions((prev) => [...prev, q]);
+    setPerformedQuestions((prev) => {
+      if (!prev.includes(questions[currentIndex]?.id)) {
+        return [...prev, questions[currentIndex]?.id];
+      }
+      return prev;
+    });
   }, [q])
 
   useEffect(() => {
@@ -340,7 +344,6 @@ const FoodQuizPanel = ({
       // Merge previous answers (from attemptedQuestions) with current session answers
       const previousAnswers = Array.isArray(attemptedQuestions) ? attemptedQuestions : [];
       const answers = [...previousAnswers, ...currentSessionAnswers];
-      console.log('All Answers:', answers);
 
 
       // Submit progress

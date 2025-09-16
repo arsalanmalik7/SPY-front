@@ -17,9 +17,10 @@ const ReferenceMenuPanel = ({
     ? menuData.map(wine => {
       return {
         name: wine?.product_name,
+        producer: wine?.producer_name,
         year: wine?.vintage.toString(),
         varietals: wine?.varietals.join(', '),
-        region: `${wine?.region.country} → ${wine?.region.state} → ${wine?.region.appellation}`,
+        region: `${wine?.region.country} → ${wine?.region?.region || 'N/A'} → ${wine?.region?.commune_appellation || 'N/A'}`,
         category: wine?.category,
         style: wine?.sub_category,
         body: wine?.style.body || 'N/A',
@@ -52,6 +53,7 @@ const ReferenceMenuPanel = ({
   const filteredWineData = wineData.filter(wine => {
     // First apply search filter
     const matchesSearch = wine?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      wine?.producer?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       wine?.varietals?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       wine?.region?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       wine?.style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -152,7 +154,9 @@ const ReferenceMenuPanel = ({
 
 
                       <div className="text-gray-700 mt-0.5 text-sm">{wine.year}</div>
+                      
                       <div className="mt-2"><span className="font-medium">Varietals:</span> {wine.varietals}</div>
+                      <div><span className="font-medium">Producer:</span> {wine.producer}</div>
                       <div><span className="font-medium">Region:</span> {wine.region}</div>
                       <div><span className="font-medium">Category:</span> {wine.category}</div>
                       <div><span className="font-medium">Style:</span> {wine.style}</div>

@@ -1,75 +1,86 @@
-import { useState } from "react"
-import Button from "./button"
-import { Tooltip } from "@mui/material"
-import { MenuService } from "../../services/MenuService"
+import { useState } from "react";
+import Button from "./button";
+import { Tooltip } from "@mui/material";
+import { MenuService } from "../../services/MenuService";
 
 // Update the table headers based on the active tab
-export default function MenuItemsTable({ items, onEditItem, activeTab = "food", previousTable }) {
-  const [selectedItems, setSelectedItems] = useState([])
-  const [showRestoreModal, setShowRestoreModal] = useState(false)
-  const [restoreItem, setRestoreItem] = useState(null)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [deleteItem, setDeleteItem] = useState(null)
+export default function MenuItemsTable({
+  items,
+  onEditItem,
+  activeTab = "food",
+  previousTable,
+}) {
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [restoreItem, setRestoreItem] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteItem, setDeleteItem] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [restoreLoading, setRestoreLoading] = useState(false);
 
   // Function to format the date
   const formatDate = (dateString) => {
-
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedItems(items.map((item) => item.id))
+      setSelectedItems(items.map((item) => item.id));
     } else {
-      setSelectedItems([])
+      setSelectedItems([]);
     }
-  }
+  };
 
   const handleSelectItem = (e, itemId) => {
     if (e.target.checked) {
-      setSelectedItems([...selectedItems, itemId])
+      setSelectedItems([...selectedItems, itemId]);
     } else {
-      setSelectedItems(selectedItems.filter((id) => id !== itemId))
+      setSelectedItems(selectedItems.filter((id) => id !== itemId));
     }
-  }
+  };
 
   const handleDelete = async (item) => {
     try {
+      setDeleteLoading(true);
       if (activeTab === "food") {
         await MenuService.deleteDish(item.uuid);
       } else {
         await MenuService.deleteWine(item.uuid);
       }
       // Refresh the items list after deletion
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
       window.location.reload();
     } catch (err) {
-      console.error('Failed to delete item:', err);
-      alert('Failed to delete item. Please try again.');
+      console.error("Failed to delete item:", err);
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
     }
-
   };
 
   const handleRestore = async (item) => {
-    console.log(item)
+    setRestoreLoading(true);
     if (item?.temperature) {
       try {
         await MenuService.restoreDish(item?.uuid);
         setShowRestoreModal(false);
+        setRestoreLoading(false);
         window.location.reload();
-
       } catch (error) {
         console.error(error, "Error");
+        setRestoreLoading(false);
         setShowRestoreModal(false);
       }
     } else {
       try {
         await MenuService.restoreWine(item?.uuid);
         setShowRestoreModal(false);
+        setRestoreLoading(false);
         window.location.reload();
-
       } catch (error) {
         console.error(error, "Error");
+        setRestoreLoading(false);
         setShowRestoreModal(false);
       }
     }
@@ -82,15 +93,9 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-white">
           <tr className="bg-trbackground">
-            <th className="w-10 px-4 py-3">
-              <input
-                type="checkbox"
-                className="rounded border-gray-300 text-primary focus:ring-primary"
-                onChange={handleSelectAll}
-                checked={selectedItems.length === items.length && items.length > 0}
-              />
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              Image
             </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Image</th>
             {activeTab === "food" ? (
               <>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
@@ -140,32 +145,34 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
                 </th>
               </>
             )}
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Status</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+              Status
+            </th>
 
-            {userRole !== "employee" && <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">Actions</th>}
+            {userRole !== "employee" && (
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {items.map((item) => (
             <tr key={item.id || item._id} className="hover:bg-gray-50">
               <td className="px-4 py-4">
-                <input
-                  type="checkbox"
-                  className="rounded border-gray-300 text-primary focus:ring-primary"
-                  onChange={(e) => handleSelectItem(e, item.id || item._id)}
-                  checked={selectedItems.includes(item.id || item._id)}
-                />
-              </td>
-              <td className="px-4 py-4">
                 <div className="h-12 w-12 bg-gray-200 rounded-md overflow-hidden flex justify-center items-center">
-                  {item.image_url ? <img
-                    src={item.image_url.startsWith('https')
-                      ? item.image_url
-                      : `${process.env.REACT_APP_IMAGE_BASE_URL}${item.image_url}`}
-                    alt={item.name || "Image"}
-                    className="h-full w-full object-cover"
-                  />
-                    : <svg
+                  {item.image_url ? (
+                    <img
+                      src={
+                        item.image_url.startsWith("https")
+                          ? item.image_url
+                          : `${process.env.REACT_APP_IMAGE_BASE_URL}${item.image_url}`
+                      }
+                      alt={item.name || "Image"}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
                       fill="none"
@@ -178,16 +185,21 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
                         strokeWidth={2}
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
-                    </svg>}
+                    </svg>
+                  )}
                 </div>
               </td>
               {activeTab === "food" ? (
                 <>
                   <td className="px-4 py-4">
-                    <div className="text-sm font-medium text-gray-900 text-left">{item.name || "-"}</div>
+                    <div className="text-sm font-medium text-gray-900 text-left">
+                      {item.name || "-"}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-center">{item.typeDisplay || "-"}</div>
+                    <div className="text-sm text-gray-900 text-center">
+                      {item.typeDisplay || "-"}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
                     <div className="text-sm text-gray-900 text-center">
@@ -196,7 +208,8 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
                   </td>
                   <td className="px-4 py-4">
                     <div className="text-sm text-gray-900 text-center">
-                      {Array.isArray(item?.dietary_restrictions?.health) && item.dietary_restrictions.health.length
+                      {Array.isArray(item?.dietary_restrictions?.health) &&
+                      item.dietary_restrictions.health.length
                         ? item.dietary_restrictions.health.join(", ")
                         : "-"}
                     </div>
@@ -204,7 +217,8 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
 
                   <td className="px-4 py-4">
                     <div className="text-sm text-gray-900 text-center">
-                      {Array.isArray(item?.dietary_restrictions?.belief) && item.dietary_restrictions.belief.length
+                      {Array.isArray(item?.dietary_restrictions?.belief) &&
+                      item.dietary_restrictions.belief.length
                         ? item.dietary_restrictions.belief.join(", ")
                         : "-"}
                     </div>
@@ -212,117 +226,136 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
 
                   <td className="px-4 py-4">
                     <div className="text-sm text-gray-900 text-center">
-                      {Array.isArray(item?.dietary_restrictions?.lifestyle) && item.dietary_restrictions.lifestyle.length
+                      {Array.isArray(item?.dietary_restrictions?.lifestyle) &&
+                      item.dietary_restrictions.lifestyle.length
                         ? item.dietary_restrictions.lifestyle.join(", ")
                         : "-"}
                     </div>
                   </td>
 
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-center">{formatDate(item?.updatedAt)}</div>
+                    <div className="text-sm text-gray-900 text-center">
+                      {formatDate(item?.updatedAt)}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm font-medium text-gray-900 text-center">${item.price?.toFixed(2)}</div>
+                    <div className="text-sm font-medium text-gray-900 text-center">
+                      ${item.price?.toFixed(2)}
+                    </div>
                   </td>
                 </>
               ) : (
                 <>
                   <td className="px-4 py-4">
-                    <div className="text-sm font-medium text-gray-900 text-left">{item.product_name}</div>
+                    <div className="text-sm font-medium text-gray-900 text-left">
+                      {item.product_name}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-left">{item.producerDisplay}</div>
+                    <div className="text-sm text-gray-900 text-left">
+                      {item.producerDisplay}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-left">{item.category}</div>
+                    <div className="text-sm text-gray-900 text-left">
+                      {item.category}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-left">{item.restaurantname || "-"}</div>
+                    <div className="text-sm text-gray-900 text-left">
+                      {item.restaurantname || "-"}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-left">{item.style?.name || '-'}</div>
+                    <div className="text-sm text-gray-900 text-left">
+                      {item.style?.name || "-"}
+                    </div>
                   </td>
                   <td className="px-4 py-4">
-                    <div className="text-sm text-gray-900 text-left">{item.vintageDisplay}</div>
+                    <div className="text-sm text-gray-900 text-left">
+                      {item.vintageDisplay}
+                    </div>
                   </td>
                 </>
               )}
               <td className="px-4 py-4">
                 <label className="relative inline-flex items-center cursor-pointer">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                    {item.status ? 'Active' : 'Inactive'}
+                  <span
+                    className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      item.status
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {item.status ? "Active" : "Inactive"}
                   </span>
                 </label>
               </td>
 
-              {!previousTable && userRole !== "employee" && <td className="px-4 py-4 text-sm text-gray-500">
-                <div className="flex space-x-2">
-
-                  <Tooltip
-                    title="Edit Menu Item"
-                    placement="top"
-                  >
-                    <button onClick={() => onEditItem(item)} className="text-gray-500 hover:text-gray-700">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+              {!previousTable && userRole !== "employee" && (
+                <td className="px-4 py-4 text-sm text-gray-500">
+                  <div className="flex space-x-2">
+                    <Tooltip title="Edit Menu Item" placement="top">
+                      <button
+                        onClick={() => onEditItem(item)}
+                        className="text-gray-500 hover:text-gray-700"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
-                    </button>
-                  </Tooltip>
-                  <Tooltip
-                    title="Archive Menu Item"
-                    placement="top"
-
-                  >
-                    <button
-                      onClick={() => {
-                        setDeleteItem(item);
-                        setShowDeleteModal(true);
-                      }}
-                      className="text-gray-500 hover:text-red-500"
-                    >
-
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                          />
+                        </svg>
+                      </button>
+                    </Tooltip>
+                    <Tooltip title="Archive Menu Item" placement="top">
+                      <button
+                        onClick={() => {
+                          setDeleteItem(item);
+                          setShowDeleteModal(true);
+                        }}
+                        className="text-gray-500 hover:text-red-500"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6M9 16l3 3m0 0l3-3m-3 3V4m5 4h4M4 8h4"
-                        />
-                      </svg>
-
-                    </button>
-                  </Tooltip>
-                </div>
-              </td>}
-              {previousTable && <td className="px-2 py-2 text-center">
-                <button
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded transition"
-                  onClick={() => {
-                    setRestoreItem(item);
-                    setShowRestoreModal(true);
-                  }}
-                >
-                  Undo
-                </button>
-              </td>}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6M9 16l3 3m0 0l3-3m-3 3V4m5 4h4M4 8h4"
+                          />
+                        </svg>
+                      </button>
+                    </Tooltip>
+                  </div>
+                </td>
+              )}
+              {previousTable && (
+                <td className="px-2 py-2 text-center">
+                  <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded transition"
+                    onClick={() => {
+                      setRestoreItem(item);
+                      setShowRestoreModal(true);
+                    }}
+                  >
+                    Undo
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -337,7 +370,11 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
             <Button variant="secondary" size="sm" disabled={true}>
               Previous
             </Button>
-            <Button variant="primary" size="sm" className="bg-primary text-white">
+            <Button
+              variant="primary"
+              size="sm"
+              className="bg-primary text-white"
+            >
               1
             </Button>
             <Button variant="secondary" size="sm" disabled={true}>
@@ -352,23 +389,48 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
             <h2 className="text-lg font-semibold mb-4">Restore Item</h2>
             <p className="mb-6">
-              Do you want to restore this {restoreItem?.category ? 'wine' : 'dish'}?
+              Do you want to restore this{" "}
+              {restoreItem?.category ? "wine" : "dish"}?
             </p>
             <div className="flex justify-end gap-2">
               <button
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-70"
                 onClick={() => setShowRestoreModal(false)}
+                disabled={restoreLoading}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition disabled:opacity-70"
                 onClick={() => {
                   handleRestore(restoreItem);
-                  setShowRestoreModal(false);
                 }}
+                disabled={restoreLoading}
               >
-                Restore
+                {restoreLoading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Restore"
+                )}
               </button>
             </div>
           </div>
@@ -380,28 +442,51 @@ export default function MenuItemsTable({ items, onEditItem, activeTab = "food", 
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
             <h2 className="text-lg font-semibold mb-4">Archive Item</h2>
             <p className="mb-6">
-              Are you sure you want to move this {deleteItem?.category ? 'wine' : 'dish'} to your previous menu?
+              Are you sure you want to move this{" "}
+              {deleteItem?.category ? "wine" : "dish"} to your previous menu?
             </p>
             <div className="flex justify-end gap-2">
               <button
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-70"
                 onClick={() => setShowDeleteModal(false)}
+                disabled={deleteLoading}
               >
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                onClick={() => {
-                  handleDelete(deleteItem);
-                  setShowDeleteModal(false);
-                }}
+                className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-70"
+                onClick={() => handleDelete(deleteItem)}
+                disabled={deleteLoading}
               >
-                Archive
+                {deleteLoading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Archive"
+                )}
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
