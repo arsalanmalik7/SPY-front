@@ -425,7 +425,7 @@ const FoodQuizPanel = ({
       selected[0] === 1 // 1 is index for 'No'
     ) {
       return currentIndex + 2;
-    } else if (q.question.includes('be prepared without allergens?') && selected[0] === 0) {
+    } else if (q?.question?.includes('be prepared without allergens?') && selected[0] === 0) {
       // If the question is about allergens and user selects "Yes", skip to next question
       return currentIndex + 2;
     }

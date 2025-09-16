@@ -98,6 +98,18 @@ export default function EditUserPanel({ user, setUsers, onClose }) {
     }
   };
 
+  const checkPermission = () => {
+    if (currentUserRole === "super_admin") {
+      return true;
+    } else if (currentUserRole === "director") {
+      return userRole === "employee" || userRole === "manager";
+    } else if (currentUserRole === "manager") {
+      return userRole === "employee";
+    } else {
+      return false;
+    }
+  };
+
   return (
     <div className="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-[50%] bg-white border-l border-gray-200 shadow-lg z-50 overflow-y-auto">
       <div className="p-4 border-b border-gray-200 flex justify-between items-center">
@@ -159,6 +171,7 @@ export default function EditUserPanel({ user, setUsers, onClose }) {
                 name="first_name"
                 value={formData.first_name}
                 onChange={handleChange}
+                disabled={!checkPermission()}
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
@@ -172,6 +185,7 @@ export default function EditUserPanel({ user, setUsers, onClose }) {
                 name="last_name"
                 value={formData.last_name}
                 onChange={handleChange}
+                disabled={!checkPermission()}
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
@@ -187,6 +201,7 @@ export default function EditUserPanel({ user, setUsers, onClose }) {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                disabled={!checkPermission()}
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
