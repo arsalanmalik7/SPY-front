@@ -78,8 +78,8 @@ const ReviewMistakesPanel = ({
               <div className="flex items-center gap-2 mb-1">
                 <X size={18} className="text-[#C1121F]" />
                 <span className="text-sm sm:text-base text-[#C1121F] font-semibold">
-                  Your answer: {currentMistake.userAnswer.startsWith('http') || currentMistake.userAnswer.startsWith('/uploads/') ? (
-                    <img className="mx-auto my-2 block max-h-52" src={currentMistake.userAnswer.startsWith('http') ? currentMistake.userAnswer : process.env.REACT_APP_IMAGE_BASE_URL + currentMistake.userAnswer} alt="option" />
+                  Your answer: {currentMistake?.userAnswer?.startsWith('http') || currentMistake?.userAnswer?.startsWith('/uploads/') ? (
+                    <img className="mx-auto my-2 block max-h-52" src={currentMistake?.userAnswer?.startsWith('http') ? currentMistake.userAnswer : process.env.REACT_APP_IMAGE_BASE_URL + currentMistake.userAnswer} alt="option" />
                   ) : (
                     <span className="text-base sm:text-lg text-black font-medium leading-tight break-words ">{currentMistake.userAnswer}</span>
                   )}
@@ -88,8 +88,8 @@ const ReviewMistakesPanel = ({
               <div className="flex items-center gap-2">
                 <Check size={18} className="text-[#FFD600]" />
                 <span className="text-sm sm:text-base text-[#FFD600] font-semibold">
-                  Correct answer: {currentMistake.correctAnswer.startsWith('http') || currentMistake.correctAnswer.startsWith('/uploads/') ? (
-                    <img className="mx-auto my-2 block max-h-52" src={currentMistake.correctAnswer.startsWith('http') ? currentMistake.correctAnswer : process.env.REACT_APP_IMAGE_BASE_URL + currentMistake.correctAnswer} alt="option" />
+                  Correct answer: {currentMistake?.correctAnswer?.startsWith('http') || currentMistake?.correctAnswer?.startsWith('/uploads/') ? (
+                    <img className="mx-auto my-2 block max-h-52" src={currentMistake?.correctAnswer?.startsWith('http') ? currentMistake.correctAnswer : process.env.REACT_APP_IMAGE_BASE_URL + currentMistake.correctAnswer} alt="option" />
                   ) : (
                     <span className="text-base sm:text-lg text-black font-medium leading-tight break-words ">{currentMistake.correctAnswer}</span>
                   )}

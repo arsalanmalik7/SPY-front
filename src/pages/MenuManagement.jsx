@@ -58,7 +58,9 @@ export default function MenuManagement() {
     "can_substitute",
     "substitutions",
     "substitution_notes",
+    "image_url",
     "notes",
+    "cross_contact",
   ];
 
   const allowedWineHeaders = [
@@ -72,7 +74,6 @@ export default function MenuManagement() {
     "vineyard",
     "vintage",
     "category",
-    "sub_category",
     "is_filtered",
     "has_residual_sugar",
     "is_organic",
@@ -83,11 +84,6 @@ export default function MenuManagement() {
     "glass_price",
     "bottle_price",
     "style_name",
-    "body",
-    "texture",
-    "flavor_intensity",
-    "type",
-    "body_rank",
     "notes",
   ];
 
@@ -288,14 +284,19 @@ export default function MenuManagement() {
         if (json.length > 0) {
           const uploadedHeaders = json[0].map((h) => h?.toString().trim());
 
-          const expectedHeaders =
+          let expectedHeaders =
             activeTab === "food" ? allowedHeaders : allowedWineHeaders;
-
-          const unexpectedHeaders = uploadedHeaders.filter(
-            (header) => !expectedHeaders.includes(header)
+          // For missing headers, make image_url optional
+          let missingHeaders = expectedHeaders.filter(
+            (header) =>
+              header !== "image_url" && !uploadedHeaders.includes(header)
           );
-          const missingHeaders = expectedHeaders.filter(
-            (header) => !uploadedHeaders.includes(header)
+          // For unexpected headers, allow image_url if present
+          let allowedExtraHeaders = activeTab === "food" ? ["image_url"] : [];
+          let unexpectedHeaders = uploadedHeaders.filter(
+            (header) =>
+              !expectedHeaders.includes(header) &&
+              !allowedExtraHeaders.includes(header)
           );
 
           if (unexpectedHeaders.length > 0 || missingHeaders.length > 0) {
@@ -318,6 +319,7 @@ export default function MenuManagement() {
             return;
           }
 
+          // Validate every row for vintage column (wine uploads)
           // Validate every row for vintage column (wine uploads)
           if (activeTab === "wine" && uploadedHeaders.includes("vintage")) {
             const vintageIndex = uploadedHeaders.indexOf("vintage");
@@ -391,7 +393,12 @@ export default function MenuManagement() {
               ?.join(", ")
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
-            item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+            item.description
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            item.restaurantname
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase())
           : item.product_name
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
@@ -401,8 +408,8 @@ export default function MenuManagement() {
               .includes(searchQuery.toLowerCase()) ||
             item.region?.country
               ?.toLowerCase()
-              .includes(searchQuery.toLowerCase()));
-
+              .includes(searchQuery.toLowerCase())) ||
+        item?.restaurantname?.toLowerCase().includes(searchQuery.toLowerCase());
       // Filter by category
       const matchesCategory =
         selectedCategory === "All Categories" ||

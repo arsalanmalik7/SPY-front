@@ -85,9 +85,9 @@ const LessonCompletePanel = ({
         {/* Unit Progress */}
         <div className="mb-6 sm:mb-8 p-4 bg-white rounded-lg border border-gray-600 mx-4 sm:mx-8">
           <div className="text-base text-left sm:text-lg font-semibold text-black mb-2">Unit Progress</div>
-          <div className="text-base text-left text-gray-600 mb-1">{completedChapters} of {allChapters} chapters completed</div>
+          <div className="text-base text-left text-gray-600 mb-1">{lessonData?.progress?.score >= 70 ? completedChapters : 0} of {allChapters} chapters completed</div>
           <ProgressBar 
-            value={completedChapters} 
+            value={lessonData?.progress?.score >= 70 ? completedChapters : 0} 
             max={allChapters} 
             showLabel={false} 
             variant="primary" 

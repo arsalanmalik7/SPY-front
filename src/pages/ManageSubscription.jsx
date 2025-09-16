@@ -28,16 +28,6 @@ const locationSubscriptions = [
   },
 ];
 
-const billingHistory = [
-  {
-    invoice: "Feb 15, 2025",
-    amount: "$2,388.00",
-    plan: "Multi-Location",
-    status: "Paid",
-    action: "View in Stripe",
-  },
-];
-
 const StripeLogo = () => (
   <span
     className="inline-block align-middle mr-2 font-bold text-xs tracking-wide text-white"
@@ -180,10 +170,23 @@ export default function ManageSubscription() {
     ? singleLocationPlan.unit_amount / 100
     : 79.99; // Stripe amount is in cents
   const endDate = moment.utc(subscription?.current_subscription?.end_date);
+  const startDate = moment.utc(subscription?.current_subscription?.start_date);
   const currentPlan = subscription?.current_subscription?.plan;
   const billingAmount = subscription?.current_subscription?.amount;
   const locationQuantity = subscription?.current_subscription?.locations;
 
+  let billingHistory = [];
+
+  if (endDate) {
+    billingHistory = [
+      {
+        invoice: moment.utc(endDate).format("MMM D, YYYY"),
+        amount: billingAmount,
+        plan: currentPlan,
+        status: "Paid",
+      },
+    ];
+  }
   const nowUTC = moment.utc();
   const remainingDaysInExpiry = endDate.diff(nowUTC, "days");
 
@@ -194,9 +197,10 @@ export default function ManageSubscription() {
   return (
     <div className="max-w-7xl mx-auto p-2 md:p-6 w-full">
       {/* Show subscription options if not subscribed via Stripe */}
-      {!subscription?.current_subscription?.status &&
-      subscription?.current_subscription?.status !== undefined &&
-      userRole !== "super_admin" ? (
+      {(!subscription?.current_subscription?.status &&
+        subscription?.current_subscription?.status !== undefined) ||
+      (subscription?.current_subscription?.plan === "Free trial" &&
+        userRole !== "super_admin") ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Free Plan */}
           <div className="bg-white border border-gray-200 rounded-lg shadow-card p-6 flex flex-col justify-between">
@@ -207,15 +211,23 @@ export default function ManageSubscription() {
                 <li>1 location</li>
                 <li>Basic menu management</li>
                 <li>Limited staff training</li>
-                <li>Valid for 1 month</li>
+                <li>Only Unit 1 is unlocked</li>
               </ul>
             </div>
-            <Button
-              className="bg-primary text-white w-full mt-2"
-              onClick={() => handleCheckout(freePlan?.id, 1, 0, "free")}
-            >
-              Choose Free
-            </Button>
+            {subscription?.current_subscription?.plan === "Free trial" ? (
+              <div>
+                <Button className="bg-gray-300 w-full mt-2">
+                  You're on a free trial
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className="bg-primary text-white w-full mt-2"
+                onClick={() => handleCheckout(freePlan?.id, 1, 0, "free")}
+              >
+                Choose Free
+              </Button>
+            )}
           </div>
           {/* Single Location Plan */}
           <div className="bg-white border border-gray-200 rounded-lg shadow-card p-6 flex flex-col justify-between">
@@ -271,6 +283,7 @@ export default function ManageSubscription() {
         </div>
       ) : null}
       {subscription?.current_subscription?.status &&
+      subscription?.current_subscription?.plan !== "Free trial" &&
       userRole !== "super_admin" ? (
         <>
           <div className="flex items-stretch mb-4">
@@ -362,7 +375,7 @@ export default function ManageSubscription() {
                 <li>24/7 support</li>
               </ul>
 
-              <div className="">
+              {/* <div className="">
                 <Button
                   className="bg-[#C1121F] hover:bg-[#C1121F]/80 w-full md:w-80 flex items-center justify-center text-white"
                   variant="primary"
@@ -370,11 +383,11 @@ export default function ManageSubscription() {
                   <StripeLogo />
                   Manage Plan in Stripe
                 </Button>
-              </div>
+              </div> */}
             </div>
           </Card>
 
-          <Card className="mb-4">
+          {/* <Card className="mb-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
               <div className="font-semibold text-lg">
                 Location Subscriptions
@@ -432,7 +445,7 @@ export default function ManageSubscription() {
                 </tbody>
               </table>
             </div>
-          </Card>
+          </Card> */}
 
           <Card>
             <div className="font-semibold text-left text-lg mb-3">
@@ -441,41 +454,25 @@ export default function ManageSubscription() {
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm border rounded-md">
                 <thead>
-                  <tr className="bg-[#FFA944]">
-                    <th className="px-4 py-2 text-left font-semibold">
-                      Invoice Date
-                    </th>
-                    <th className="px-4 py-2 text-left font-semibold">
-                      Amount
-                    </th>
-                    <th className="px-4 py-2 text-left font-semibold">
-                      Plan Type
-                    </th>
-                    <th className="px-4 py-2 text-left font-semibold">
-                      Status
-                    </th>
-                    <th className="px-4 py-2 text-left font-semibold">
-                      Action
-                    </th>
+                  <tr className="bg-[#FFA944] text-left">
+                    {" "}
+                    {/* apply alignment to whole row */}
+                    <th className="px-4 py-2 font-semibold">Invoice Date</th>
+                    <th className="px-4 py-2 font-semibold">Amount</th>
+                    <th className="px-4 py-2 font-semibold">Plan Type</th>
+                    <th className="px-4 py-2 font-semibold">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {billingHistory.map((bill, i) => (
-                    <tr key={i} className="border-t">
+                    <tr key={i} className="border-t text-left">
+                      {" "}
+                      {/* align row cells */}
                       <td className="px-4 py-2">{bill.invoice}</td>
                       <td className="px-4 py-2">{bill.amount}</td>
                       <td className="px-4 py-2">{bill.plan}</td>
                       <td className="px-4 py-2">
                         <Badge variant="warning">{bill.status}</Badge>
-                      </td>
-                      <td className="px-4 py-2">
-                        <Button
-                          size="sm"
-                          className="flex items-center justify-center bg-[#C1121F] hover:bg-[#C1121F]/80 text-white"
-                        >
-                          <StripeLogo />
-                          {bill.action}
-                        </Button>
                       </td>
                     </tr>
                   ))}

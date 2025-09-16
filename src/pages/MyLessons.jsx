@@ -9,6 +9,7 @@ import FoodQuizPanel from "../components/common/FoodQuizPanel";
 import { getEmployeeLessons, getRestaurants } from "../services/lessonProgress";
 import authService from "../services/authService";
 import RestaurantSelectModal from "../components/common/RestaurantSelectModal";
+import { useNavigate } from "react-router-dom";
 
 const ChapterStatus = ({ status, unitLocked, onStart }) => {
   if (status === "completed" && unitLocked === false)
@@ -44,78 +45,117 @@ const ChapterStatus = ({ status, unitLocked, onStart }) => {
   return null;
 };
 
-const UnitCard = ({ unit, desc, chapters, locked, type, onStartQuiz }) => (
-  <Card
-    className={`mb-4 w-full ${locked ? "bg-[#f8f3e7] opacity-80" : "bg-white"}`}
-  >
-    <div className="flex items-center justify-between mb-2">
-      <div className="text-left">
-        <div className="text-base sm:text-lg text-black leading-tight">
-          {unit}
-        </div>
-        {/* <div className="text-sm sm:text-base text-black mt-0.5 leading-tight">{desc}</div> */}
-      </div>
-      {locked && (
-        <span className="ml-2">
-          <Lock size={18} className="text-gray-500" />
-        </span>
-      )}
-    </div>
-    <div className="space-y-2 mt-2">
-      {chapters.map((ch, idx) => {
-        return (
-          <div
-            key={idx}
-            className={`flex items-center justify-between rounded-lg px-2 py-2 sm:px-3 sm:py-2 mb-1 ${
-              ch.status === "completed"
-                ? "bg-[#ffb84d] text-[#3b2f13]"
-                : ch.status === "start" && !locked
-                ? "bg-white text-[#3b2f13]"
-                : "bg-[#f8f3e7] text-gray-500"
-            }`}
-          >
-            <div
-              className={`flex flex-col text-sm sm:text-base text-left ${
-                ch.status === "locked" ? "text-gray-500" : ""
-              }`}
-            >
-              <span
-                className={`font-medium text-left ${
-                  ch.status === "locked" ? "text-gray-500" : ""
-                }`}
-              >
-                Chapter {ch.chapter}
-              </span>
-              <span
-                className={`ml-0 mt-0.5 text-xs sm:text-sm font-normal text-left ${
-                  ch.status === "locked" ? "text-gray-500" : ""
-                }`}
-              >
-                {ch.title}
-              </span>
+const UnitCard = ({ unit, desc, chapters, locked, type, onStartQuiz }) => {
+  const navigate = useNavigate();
+  const userRole = localStorage.getItem("userRole");
+  return (
+    <div className="relative">
+      <Card
+        className={`mb-4 w-full ${
+          locked ? "bg-[#f8f3e7] opacity-80" : "bg-white"
+        }`}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-left">
+            <div className="text-base sm:text-lg text-black leading-tight">
+              {unit}
             </div>
-            <div>
-              <span className="p-2">
-                {ch.questions && Array.isArray(ch.questions)
-                  ? ` ${ch?.attemptedQuestions?.length}/${ch.questions.length}`
-                  : ""}
-              </span>
-              <ChapterStatus
-                status={ch.status}
-                unitLocked={locked}
-                onStart={
-                  ch.status === "start"
-                    ? () => onStartQuiz(type, unit, ch.title)
-                    : undefined
-                }
-              />
+            {/* <div className="text-sm sm:text-base text-black mt-0.5 leading-tight">{desc}</div> */}
+          </div>
+          {locked && (
+            <span className="ml-2">
+              <Lock size={18} className="text-gray-500" />
+            </span>
+          )}
+        </div>
+        <div className="space-y-2 mt-2">
+          {chapters.map((ch, idx) => {
+            return (
+              <div
+                key={idx}
+                className={`flex items-center justify-between rounded-lg px-2 py-2 sm:px-3 sm:py-2 mb-1 ${
+                  ch.status === "completed"
+                    ? "bg-[#ffb84d] text-[#3b2f13]"
+                    : ch.status === "start" && !locked
+                    ? "bg-white text-[#3b2f13]"
+                    : "bg-[#f8f3e7] text-gray-500"
+                }`}
+              >
+                <div
+                  className={`flex flex-col text-sm sm:text-base text-left ${
+                    ch.status === "locked" ? "text-gray-500" : ""
+                  }`}
+                >
+                  <span
+                    className={`font-medium text-left ${
+                      ch.status === "locked" ? "text-gray-500" : ""
+                    }`}
+                  >
+                    Chapter {ch.chapter}
+                  </span>
+                  <span
+                    className={`ml-0 mt-0.5 text-xs sm:text-sm font-normal text-left ${
+                      ch.status === "locked" ? "text-gray-500" : ""
+                    }`}
+                  >
+                    {ch.title}
+                  </span>
+                </div>
+                <div>
+                  <span className="p-2">
+                    {ch.questions && Array.isArray(ch.questions)
+                      ? ` ${ch?.attemptedQuestions?.length}/${ch.questions.length}`
+                      : ""}
+                  </span>
+                  <ChapterStatus
+                    status={ch.status}
+                    unitLocked={locked}
+                    onStart={
+                      ch.status === "start"
+                        ? () => onStartQuiz(type, unit, ch.title)
+                        : undefined
+                    }
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {/* Layover for locked units */}
+        {locked && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 z-10 rounded-lg">
+            <div className="bg-white bg-opacity-90 p-6 rounded-lg shadow text-center">
+              <div className="text-lg font-semibold text-gray-800 mb-2">
+                You are on Free Trial
+              </div>
+              {userRole !== "employee" ? (
+                <>
+                  <div className="text-sm text-gray-600 mb-3">
+                    Upgrade your plan to unlock this unit and access all
+                    lessons.
+                  </div>
+                  <Button
+                    variant="primary"
+                    className="px-4 py-2"
+                    onClick={() => {
+                      navigate("/subscription");
+                    }}
+                  >
+                    Upgrade Now
+                  </Button>
+                </>
+              ) : (
+                <div className="text-sm text-gray-600 mb-3">
+                  Contact your admin to unlock this unit and access all lessons.
+                </div>
+              )}
             </div>
           </div>
-        );
-      })}
+        )}
+      </Card>
     </div>
-  </Card>
-);
+  );
+};
 
 const SectionTitle = ({ children }) => (
   <div className="text-lg sm:text-xl font-semibold text-[#3b2f13] mb-2 sm:mb-3 mt-6 sm:mt-8 text-left w-full">

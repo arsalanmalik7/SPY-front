@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Route, Navigate, useLocation, useNavigate, replace } from "react-router-dom";
 import AuthLayout from "../components/layout/AuthLayout";
 import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../pages/Login";
@@ -81,7 +81,7 @@ const roleRouteMap = {
     "/subscription",
     "/profile-security",
     "/bulk-upload-users",
-    "csv-template-guide"
+    "/csv-template-guide"
   ],
   director: [
     "/dashboard",
@@ -98,7 +98,7 @@ const roleRouteMap = {
     "/subscription",
     "/profile-security",
     "/bulk-upload-users",
-    "csv-template-guide"
+    "/csv-template-guide"
   ],
   employee: [
     "/my-lessons",
@@ -124,14 +124,20 @@ export const ProtectedRoute = ({ route, component: Component, children }) => {
   const location = useLocation();
   const [checked, setChecked] = useState(false);
   const [allowed, setAllowed] = useState(false);
+  const isAuthenticated = authService.getCurrentUser()?.accessToken;
 
   useEffect(() => {
-    // Synchronous check, but this pattern prevents flicker
+    // First, check authentication
+    if (!isAuthenticated) {
+      setAllowed(false);
+      setChecked(true);
+      return;
+    }
+    // Then, check route permission
     const result = checkRoutePermission(route);
     setAllowed(result);
     setChecked(true);
-    
-  }, [route]);
+  }, [route, isAuthenticated]);
 
   if (!checked) {
     // Show a white screen while checking
@@ -140,12 +146,17 @@ export const ProtectedRoute = ({ route, component: Component, children }) => {
     );
   }
 
+  if (!isAuthenticated) {
+    // Redirect unauthenticated users to login
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
   if (allowed) {
     return Component ? <Component /> : children;
   } else {
     return (
       <Navigate
-        to={userRole === "employee" ? "/my-lessons" : "/dashboard"}
+        to={userRole && userRole === "employee" ? "/my-lessons" : "/dashboard"}
         replace
       />
     );
@@ -160,8 +171,9 @@ const PublicRoute = ({ children }) => {
   const userRole = authService.getCurrentUser()?.role;
 
   useEffect(() => {
+      
     if (isAuthenticated) {
-      navigate(userRole === "employee" ? "/my-lessons" : "/dashboard", {
+      navigate(userRole !== undefined && userRole === "employee" ? "/my-lessons" : "/dashboard", {
         replace: true,
       });
     }
@@ -170,7 +182,7 @@ const PublicRoute = ({ children }) => {
   if (isAuthenticated) {
     return (
       <Navigate
-        to={userRole === "employee" ? "/my-lessons" : "/dashboard"}
+        to={userRole && userRole === "employee" ? "/my-lessons" : "/dashboard"}
         replace
       />
     );
@@ -231,6 +243,15 @@ export const routes = [
           </PublicRoute>
         ),
       },
+      {
+        path: "*",
+        element: (
+          <Navigate
+            to={"/login"} 
+            replace
+          />
+        ),
+      }
     ],
   },
   {
@@ -411,7 +432,7 @@ export const routes = [
         path: "*",
         element: (
           <Navigate
-            to={userRole === "employee" ? "/my-lessons" : "/dashboard"}
+            to={userRole && userRole === "employee" ? "/my-lessons" : "/dashboard"}
             replace
           />
         ),

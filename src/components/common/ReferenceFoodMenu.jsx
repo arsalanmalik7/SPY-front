@@ -195,7 +195,7 @@ const ReferenceFoodMenuPanel = ({ isOpen, onClose, menuData }) => {
                       {item.name}
                     </span>
                     <span className="text-black text-sm font-semibold text-right">
-                      {item.price}
+                      {item?.price}
                     </span>
                   </div>
                   <div className="text-gray-700 text-sm mb-1 text-left">
