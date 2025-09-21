@@ -527,7 +527,11 @@ export default function MenuManagement() {
   );
 
   if (loading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-red-200 border-t-red-500"></div>
+      </div>
+    );
   }
 
   if (error) {

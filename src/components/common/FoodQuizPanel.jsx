@@ -183,8 +183,8 @@ const FoodQuizPanel = ({
 
   useEffect(() => {
     setPerformedQuestions((prev) => {
-      if (!prev.includes(questions[currentIndex]?.id)) {
-        return [...prev, questions[currentIndex]?.id];
+      if (!prev.includes(questions[currentIndex]?._id)) {
+        return [...prev, questions[currentIndex]?._id];
       }
       return prev;
     });

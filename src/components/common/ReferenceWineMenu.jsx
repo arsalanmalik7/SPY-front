@@ -23,10 +23,10 @@ const ReferenceMenuPanel = ({
         region: `${wine?.region.country} → ${wine?.region?.region || 'N/A'} → ${wine?.region?.commune_appellation || 'N/A'}`,
         category: wine?.category,
         style: wine?.sub_category,
-        body: wine?.style.body || 'N/A',
+        body: wine?.style?.body || 'N/A',
         image_url: wine?.image_url || 'N/A',
-        texture: wine?.style.texture || 'N/A',
-        flavorIntensity: wine?.style.flavor_intensity || 'N/A',
+        texture: wine?.style?.texture || 'N/A',
+        flavorIntensity: wine?.style?.flavor_intensity || 'N/A',
         price: { glass: wine?.offering?.glass_price, bottle: wine?.offering?.bottle_price }, // Add price if available in your data
         tags: [
           ...(wine?.is_organic ? ['Organic'] : []),
@@ -165,8 +165,8 @@ const ReferenceMenuPanel = ({
                       <div><span className="font-medium">Flavor Intensity:</span> {wine.flavorIntensity}</div>
                       <div className="mt-2"><span className="font-medium">Price:</span></div>
                       <div className="ml-2 text-sm">
-                        {wine.price.glass !== 'N/A' && <div><span className="font-medium">By Glass:</span> {wine.price.glass}</div>}
-                        <div><span className="font-medium">By Bottle:</span> {wine.price.bottle}</div>
+                        {wine?.price?.glass && <div><span className="font-medium">By Glass:</span> ${wine?.price?.glass?.toFixed(2)}</div>}
+                        {wine?.price?.bottle && <div><span className="font-medium">By Bottle:</span>{wine?.price?.bottle && ` $${wine?.price?.bottle?.toFixed(2)}`}</div>}
                       </div>
                       {wine.tags.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">

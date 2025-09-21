@@ -149,8 +149,8 @@ const WineQuizPanel = ({
 
   useEffect(() => {
     setPerformedQuestions((prev) => {
-      if (!prev.includes(q?.id)) {
-        return [...prev, q?.id];
+      if (!prev.includes(q?._id)) {
+        return [...prev, q?._id];
       }
       return prev;
     });

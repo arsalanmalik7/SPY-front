@@ -102,6 +102,9 @@ const UnitCard = ({ unit, desc, chapters, locked, type, onStartQuiz }) => {
                   </span>
                 </div>
                 <div>
+                  {ch?.isNewQuestions && (
+                    <span>New questions added/edited. Continue?</span>
+                  )}
                   <span className="p-2">
                     {ch.questions && Array.isArray(ch.questions)
                       ? ` ${ch?.attemptedQuestions?.length}/${ch.questions.length}`
@@ -184,6 +187,7 @@ function groupLessonsByUnit(lessons, category) {
         attemptedQuestions: lesson.attemptedQuestions,
         chapter_name: lesson.chapter_name,
         status: lesson.status.toLowerCase(),
+        isNewQuestions: lesson?.isNewQuestions,
         uuid: lesson.uuid,
         questions: lesson.questions,
         lessonObj: lesson, // keep the full lesson for quiz
@@ -367,6 +371,7 @@ export const MyLessons = () => {
                           title: ch.chapter_name,
                           chapter: ch.chapter,
                           status: ch.status,
+                          isNewQuestions: ch.isNewQuestions,
                           uuid: ch.uuid,
                           attemptedQuestions: ch.attemptedQuestions,
                           questions: ch.questions,
@@ -409,6 +414,7 @@ export const MyLessons = () => {
                           chapter: ch.chapter,
                           status: ch.status,
                           uuid: ch.uuid,
+                          isNewQuestions: ch.isNewQuestions,
                           attemptedQuestions: ch.attemptedQuestions,
                           questions: ch.questions,
                           lessonObj: ch.lessonObj,
@@ -450,6 +456,7 @@ export const MyLessons = () => {
 
       const processedQuestions = unattemptedQuestions.map((q) => ({
         id: q.uuid,
+        _id: q._id,
         question: q.question_text,
         type: q.question_type,
         options: q.options_variable,
