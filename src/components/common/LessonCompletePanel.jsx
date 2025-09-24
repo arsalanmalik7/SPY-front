@@ -59,7 +59,7 @@ const LessonCompletePanel = ({
         }`}
       >
         {/* Header */}
-        {lessonData?.score >= 70 ? (
+        {lessonData?.progress?.score >= 70 ? (
           <div className="flex flex-col items-center text-center px-4 py-6 sm:px-8 sm:py-8 mb-6 sm:mb-8">
             <div className="bg-red-600 rounded-full p-3 mb-4">
               <CheckCircle size={40} className="text-white" />

@@ -78,7 +78,7 @@ const ReferenceFoodMenuPanel = ({ isOpen, onClose, menuData }) => {
         let temperature = dish?.temperature || "None";
       acc[type].push({
         name: dish?.name,
-        price: `$${dish?.price}`,
+        price: `$${dish?.price?.toFixed(2)}`,
         description: dish?.description,
         allergens,
         healthRestrictions,

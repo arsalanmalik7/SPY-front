@@ -280,8 +280,8 @@ export default function RestaurantManagement() {
                   userProfile?.current_subscription?.sub_employee) ||
                 restaurants.length ===
                   userProfile?.current_subscription?.locations ||
-                (userProfile?.current_subscription?.plan === "Free trial" &&
-                  restaurants?.length === 0) ? null : (
+                  loading
+                 ? null : (
                   <button
                     onClick={handleAddRestaurant}
                     className="px-3 sm:px-4 py-2 bg-textcolor text-white rounded-md flex items-center"

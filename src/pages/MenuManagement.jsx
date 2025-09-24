@@ -85,6 +85,7 @@ export default function MenuManagement() {
     "bottle_price",
     "style_name",
     "notes",
+    "image_url",
   ];
 
   useEffect(() => {
@@ -292,7 +293,7 @@ export default function MenuManagement() {
               header !== "image_url" && !uploadedHeaders.includes(header)
           );
           // For unexpected headers, allow image_url if present
-          let allowedExtraHeaders = activeTab === "food" ? ["image_url"] : [];
+          let allowedExtraHeaders = ["image_url"] || [];
           let unexpectedHeaders = uploadedHeaders.filter(
             (header) =>
               !expectedHeaders.includes(header) &&
@@ -319,14 +320,32 @@ export default function MenuManagement() {
             return;
           }
 
-          // Validate every row for vintage column (wine uploads)
+          // Duplicate name validation for food bulk upload
+          if (activeTab === "food" && uploadedHeaders.includes("name")) {
+            const nameIndex = uploadedHeaders.indexOf("name");
+            const seenNames = new Set();
+            for (let i = 1; i < json.length; i++) {
+              const row = json[i];
+              const name = row[nameIndex]?.toString().trim().toLowerCase();
+              if (seenNames.has(name)) {
+                setUploadError(
+                  "Duplicate food detected: Name must be unique for each dish."
+                );
+                setExcelPreviewData(null);
+                setExcelPreviewHeaders([]);
+                setIsFileValid(false);
+                return;
+              }
+              seenNames.add(name);
+            }
+          }
+
           // Validate every row for vintage column (wine uploads)
           if (activeTab === "wine" && uploadedHeaders.includes("vintage")) {
             const vintageIndex = uploadedHeaders.indexOf("vintage");
             for (let i = 1; i < json.length; i++) {
               const row = json[i];
               const vintageValue = row[vintageIndex];
-              console.log(typeof vintageValue);
               if (
                 vintageValue !== undefined &&
                 vintageValue !== "" &&
@@ -338,6 +357,35 @@ export default function MenuManagement() {
                 setIsFileValid(false);
                 return;
               }
+            }
+
+            // Unique wine validation
+            const producerIdx = uploadedHeaders.indexOf("producer_name");
+            const productIdx = uploadedHeaders.indexOf("product_name");
+            // vintageIndex already defined
+            const seen = new Set();
+            for (let i = 1; i < json.length; i++) {
+              const row = json[i];
+              const key = `${row[producerIdx]
+                ?.toString()
+                .trim()
+                .toLowerCase()}|${row[productIdx]
+                ?.toString()
+                .trim()
+                .toLowerCase()}|${row[vintageIndex]
+                ?.toString()
+                .trim()
+                .toLowerCase()}`;
+              if (seen.has(key)) {
+                setUploadError(
+                  "Duplicate wine detected: Producer, Product Name, and Vintage must be unique for each wine."
+                );
+                setExcelPreviewData(null);
+                setExcelPreviewHeaders([]);
+                setIsFileValid(false);
+                return;
+              }
+              seen.add(key);
             }
           }
 

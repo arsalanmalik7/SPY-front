@@ -18,9 +18,9 @@ const ReferenceMenuPanel = ({
       return {
         name: wine?.product_name,
         producer: wine?.producer_name,
-        year: wine?.vintage.toString(),
-        varietals: wine?.varietals.join(', '),
-        region: `${wine?.region.country} → ${wine?.region?.region || 'N/A'} → ${wine?.region?.commune_appellation || 'N/A'}`,
+        year: wine?.vintage?.toString(),
+        varietals: wine?.varietals?.join(', '),
+        region: `${wine?.region?.country} → ${wine?.region?.region || 'N/A'} → ${wine?.region?.commune_appellation || 'N/A'}`,
         category: wine?.category,
         style: wine?.sub_category,
         body: wine?.style?.body || 'N/A',
@@ -165,7 +165,8 @@ const ReferenceMenuPanel = ({
                       <div><span className="font-medium">Flavor Intensity:</span> {wine.flavorIntensity}</div>
                       <div className="mt-2"><span className="font-medium">Price:</span></div>
                       <div className="ml-2 text-sm">
-                        {wine?.price?.glass && <div><span className="font-medium">By Glass:</span> ${wine?.price?.glass?.toFixed(2)}</div>}
+                        {wine?.price?.glass ? <div><span className="font-medium">By Glass:</span> ${wine?.price?.glass?.toFixed(2)}</div>
+                        : <div><span className="font-medium">By Glass:</span> $0.00 </div>}
                         {wine?.price?.bottle && <div><span className="font-medium">By Bottle:</span>{wine?.price?.bottle && ` $${wine?.price?.bottle?.toFixed(2)}`}</div>}
                       </div>
                       {wine.tags.length > 0 && (
